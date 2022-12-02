@@ -144,3 +144,4 @@ old/
 venv.7z
 .env.dev
 .env.prod
+poetry.lock
