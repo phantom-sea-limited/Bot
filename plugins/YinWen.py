@@ -10,4 +10,9 @@ yw = on_type(GroupMessage, priority=10)
 
 @yw.handle()
 def __yw(event: GroupMessage):
-    pass
+    if random.randint(0, 1000) <= 100:  # 激活判定
+        scale = random.randint(0, 1000)  # 成功检定
+        if scale >= 900 or scale <= 100:  # 邪神手滑了
+            pass
+        else:  # 中嘞,哥
+            pass
