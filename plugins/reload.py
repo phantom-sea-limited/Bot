@@ -14,7 +14,7 @@ async def _reload():
     Reloader.reload(5)
     # nonebot.run(app="__mp_main__:app")
 
-reload = on_keyword(["Reload"], priority=1)
+reload = on_keyword(["Reload"], priority=1, block=True)
 
 
 @reload.handle()

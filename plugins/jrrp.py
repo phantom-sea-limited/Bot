@@ -32,7 +32,7 @@ async def __jrrp_de(event: MessageEvent):
         await jrrp_de.finish(f"{name}今日会收到{star}颗星星！从月球直邮的哟")
 
 
-jrrp_cq = on_keyword(["今日抽签", "抽签"], priority=2, block=True)
+jrrp_cq = on_keyword(["今日抽签", "抽签"], priority=1, block=True)
 
 
 @jrrp_cq.handle()
