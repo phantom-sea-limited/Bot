@@ -95,6 +95,7 @@ class BOT():
 
     @staticmethod
     def Filtering_Group(message: json, id: int):
+        "根据群ID筛选群会话"
         fin = []
         for i in message["data"]:
             if i["type"] == "GroupMessage":
@@ -107,6 +108,7 @@ class BOT():
 
     @staticmethod
     def Filtering_User(message: json, id: int):
+        "根据用户ID筛选用户会话"
         fin = []
         for i in message["data"]:
             if i["type"] == "FriendMessage":
@@ -119,6 +121,7 @@ class BOT():
 
     @staticmethod
     def Filtering_messageChain(message: list, type: str):
+        "筛选一个消息中的对应模块: FlashImage(闪照)/Image(图片)/Plain(文本)/At(@)/Quote(回复)/Forward(转发)"
         for i in message:
             if i["type"] == type:
                 return {"err": False, "data": i}
