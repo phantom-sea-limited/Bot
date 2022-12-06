@@ -140,6 +140,11 @@ class BOT():
         r = self.session.post(BASE + "release", json=data)
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
 
+    def check(self, r):
+        msg = {'target': 1019241536, 'messageChain': [
+            {'type': 'Plain', 'text': f'消息发送异常{str(r)}'}]}
+        self.sendMessage(msg, "sendFriendMessage")
+
 
 if __name__ == "__main__":
     bot = BOT()
