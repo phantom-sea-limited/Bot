@@ -30,6 +30,14 @@
     
     如果你会使用本地图片,你可以把云端图片下下来自己搞
 
-## Something more
+## 更多
 
 1. 为了使得 `plugins.Reload` 工作正常, `FASTAPI_RELOAD` 应该被设置成 `false`
+
+# 感谢
+
+本项目受到了诸多开源项目的帮助
+
+- [nonebot-plugin-reboot](https://github.com/18870/nonebot-plugin-reboot)
+
+- [nonebot_plugin_gamedraw](https://github.com/HibiKier/nonebot_plugin_gamedraw)
