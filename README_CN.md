@@ -36,7 +36,7 @@
 
 # 感谢
 
-本项目受到了诸多开源项目的帮助
+部分代码来源
 
 - [nonebot-plugin-reboot](https://github.com/18870/nonebot-plugin-reboot)
 
