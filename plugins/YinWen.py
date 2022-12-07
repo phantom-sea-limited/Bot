@@ -4,6 +4,7 @@ import random
 import time
 from Lib.Bot import BOT
 from Lib.ini import CONF
+from .face import face
 # 淫纹刻印时间到
 
 
@@ -56,7 +57,7 @@ async def __yw(event: GroupMessage):
             "{god}赐予了{name}一件恐龙玩偶睡衣,但是触手衣装,{name}感觉腹部热热的,酱酱,是发光淫纹\n{yw}",
             "{name}吵醒了{god},祂抢了触手酱的玩具,一个针筒,很快{name}醒来发现自己变成了小萝莉",
             "{name}不知道干了啥,突然收到了一份充斥着无尽憎恨的礼物\n{yw}",
-            ""
+            "{name}身上有非常神奇的吸引力,以至于吸引到了{god},不过,在这之后似乎被当做“朋友”消耗掉了"
         ],
         "淫纹": [
             "奴隶\n违抗命令时会感到痛苦与难受",
@@ -136,3 +137,6 @@ async def __yw(event: GroupMessage):
                     yw=random.choice(ywmsg["淫纹"]),
                 )
                 await yw.finish(msg, quote=event.dict()["source"]["id"])
+
+    if random.randint(0, 1000) <= 25:  # 激活判定
+        yw.finish(random.choice(face))
