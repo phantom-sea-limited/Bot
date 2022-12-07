@@ -19,3 +19,12 @@ async def _reload():
     b.bind(r["session"])
     Reloader.reload(5)
     # nonebot.run(app="__mp_main__:app")
+
+
+@scheduler.scheduled_job("cron", hour="*/4", id="reload_http")
+async def _reload_http():
+    logger.info("Reloading http!")
+    b = BOT()
+    b.reset()
+    r = b.verify()
+    b.bind(r["session"])

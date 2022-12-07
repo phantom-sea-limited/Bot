@@ -99,7 +99,7 @@ async def __yw(event: GroupMessage):
         ],
     }
     # print(event.dict())
-    if random.randint(0, 1000) <= 50:  # 激活判定
+    if random.randint(0, 1000) <= 25:  # 激活判定
         c = CONF("YinWen")
         t = time.strftime("%Y-%m-%d", time.localtime())
         if c.load(str(event.sender.id), "day")[0] != t:
