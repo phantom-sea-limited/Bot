@@ -6,8 +6,10 @@ from nonebot import on_keyword
 from Lib.Bot import BOT
 
 require("nonebot_plugin_apscheduler")
+reload = on_keyword(["Reload"], priority=1, block=True)
 
 
+@reload.handle()
 @scheduler.scheduled_job("cron", day="*/1", id="reload")
 async def _reload():
     logger.info("Reloading!")
@@ -15,14 +17,5 @@ async def _reload():
     b.reset()
     r = b.verify()
     b.bind(r["session"])
-    Reloader.reload(5)
-    # nonebot.run(app="__mp_main__:app")
-
-reload = on_keyword(["Reload"], priority=1, block=True)
-
-
-@reload.handle()
-async def __question():
-    logger.info("Reloading!")
     Reloader.reload(5)
     # nonebot.run(app="__mp_main__:app")

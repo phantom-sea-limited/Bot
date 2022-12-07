@@ -8,7 +8,7 @@ from .Network import Network as requests
 # T = logging.StreamHandler()
 # LOG.addHandler(T)
 
-BASE = "http://admin-s.sirin.top:20000/"
+BASE = "http://1.117.87.219:20000/"
 
 
 def get_qs(qs: json, key: str):

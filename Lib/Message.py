@@ -55,16 +55,3 @@ class Message():
         self.fin["messageChain"] = self.messageChain
         self.messageChain = []
         return self.fin
-
-
-if __name__ == "__main__":
-    m = Message(960290056)
-    m.plain("我是死猫~喵")
-    m.Forward(senderId=2788781632, senderName="可爱的死猫")
-    m.plain("主人~主人~~")
-    m.image("https://ts1.cn.mm.bing.net/th?id=OIP-C.IISHfBHKDT6sE6mdOZz6OAAAAA&w=192&h=170&c=8&rs=1&qlt=90&o=6&dpr=1.25&pid=3.1&rm=2")
-    m.Forward(senderId=2788781632, senderName="可爱的死猫")
-    data = m.get_message()
-    from Bot import BOT
-    b = BOT()
-    # b.sendMessage(data)

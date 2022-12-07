@@ -1,4 +1,3 @@
-from nonebot.adapters.mirai2.message import MessageChain, MessageSegment
 from nonebot.adapters.mirai2.event import MessageEvent
 from nonebot import on_keyword
 import random
