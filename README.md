@@ -1,5 +1,9 @@
 # run
 
+> Other languages:
+>
+> - [Simplified Chinese (简体中文)](/README_CN.md)
+
 ## How to start
 
 1. `bash install.sh`
