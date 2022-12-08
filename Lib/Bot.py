@@ -137,6 +137,7 @@ class BOT():
         '''
         r = self.session.post(BASE+type, json=data)
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
+        self.check(r.json())
         return r.json()
 
     def reset(self, sessionKey="SINGLE_SESSION"):
@@ -149,9 +150,10 @@ class BOT():
         return r.json()
 
     def check(self, r):
-        msg = {'target': 1019241536, 'messageChain': [
-            {'type': 'Plain', 'text': f'消息发送异常{str(r)}'}]}
-        self.sendMessage(msg, "sendFriendMessage")
+        if r["code"] != 0:
+            msg = {'target': 1019241536, 'messageChain': [
+                {'type': 'Plain', 'text': f'消息发送异常{str(r)}'}]}
+            self.sendMessage(msg, "sendFriendMessage")
 
     def check_and_reload(self, r: dict):
         if r["code"] == 500:

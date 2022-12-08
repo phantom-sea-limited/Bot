@@ -6,12 +6,12 @@ from nonebot.adapters.mirai2 import Adapter as MIRAI2Adapter
 
 # Custom your logger
 #
-# from nonebot.log import logger, default_format
-# logger.add("error.log",
-#            rotation="00:00",
-#            diagnose=False,
-#            level="ERROR",
-#            format=default_format)
+from nonebot.log import logger, default_format
+logger.add("debug.log",
+           rotation="00:00",
+           diagnose=False,
+           level="DEBUG",
+           format=default_format)
 
 # You can pass some keyword args config to init function
 nonebot.init()
@@ -37,6 +37,7 @@ if __name__ == "__mp_main__":  # 仅在子进程运行的代码
 
 
 if __name__ == "__main__":
-    nonebot.logger.warning("Always use `nb run` to start the bot instead of manually running!")
+    nonebot.logger.warning(
+        "Always use `nb run` to start the bot instead of manually running!")
     # nonebot.load_from_toml("pyproject.toml")
     nonebot.run(app="__mp_main__:app")
