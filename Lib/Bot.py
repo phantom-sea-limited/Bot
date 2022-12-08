@@ -26,15 +26,15 @@ class BOT():
     def __init__(self) -> None:
         self.session = requests({})
 
-    def verify(self):
+    def verify(self, verifyKey="1234567890"):
         data = {
-            "verifyKey": "1234567890"
+            "verifyKey": verifyKey
         }
         r = self.session.post(BASE + "verify", json=data)
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return r.json()
 
-    def bind(self, sessionKey, qq=179334874):
+    def bind(self, sessionKey="SINGLE_SESSION", qq=179334874):
         data = {
             "sessionKey": sessionKey,
             "qq": qq
@@ -42,6 +42,10 @@ class BOT():
         r = self.session.post(BASE + "bind", json=data)
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return r.json()
+
+    def alive(self, sessionKey="SINGLE_SESSION"):
+        r = self.session.get(BASE + f"sessionInfo?sessionKey={sessionKey}")
+        return self.check_and_reload(r.json())
 
     def peekLatestMessage(self, count: int = 10):
         url = "peekLatestMessage?count={}".format(str(count))
@@ -135,13 +139,14 @@ class BOT():
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return r.json()
 
-    def reset(self):
+    def reset(self, sessionKey="SINGLE_SESSION"):
         data = {
-            "sessionKey": "YourSessionKey",
+            "sessionKey": sessionKey,
             "qq": 179334874
         }
         r = self.session.post(BASE + "release", json=data)
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
+        return r.json()
 
     def check(self, r):
         msg = {'target': 1019241536, 'messageChain': [
@@ -151,7 +156,8 @@ class BOT():
     def check_and_reload(self, r: dict):
         if r["code"] != 0:
             self.reset()
-            self.bind(self.verify()["session"])
+            # self.bind(self.verify()["session"]) # SINGLE_SESSION MODE NOT NEED bind() SINGLE_SESSION模式无需bind()
+            self.verify()
             return {"code": r["code"], "msg": r["msg"], "data": []}
         return r
 

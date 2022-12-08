@@ -10,9 +10,17 @@
 
 ## Something need to setting
 
-1. [`plugins.Bot#L11`](https://github.com/phantom-sea-limited/Bot/blob/main/Lib/Bot.py#L11)
+1. [`plugins.Bot`](https://github.com/phantom-sea-limited/Bot/blob/main/Lib/Bot.py)
 
-   Need to change to yours BOT-Http-Adapter-Address
+   L11 Need to change to yours BOT-Http-Adapter-Address
+
+   L29 verifyKey
+
+   L37 sessionKey qq
+
+   L145 sessionKey qq
+
+   L159/160 SINGLE_SESSION don't need change
    
    see more [here](https://docs.mirai.mamoe.net/mirai-api-http/adapter/HttpAdapter.html)
    

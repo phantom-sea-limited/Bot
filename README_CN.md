@@ -6,9 +6,17 @@
 
 ## 需要改的设置
 
-1. [`plugins.Bot#L11`](https://github.com/phantom-sea-limited/Bot/blob/main/Lib/Bot.py#L11)
+1. [`plugins.Bot`](https://github.com/phantom-sea-limited/Bot/blob/main/Lib/Bot.py)
 
-   改成你的BOT的HTTP-Adapter地址
+   L11 改成你的BOT的HTTP-Adapter地址
+
+   L29 verifyKey
+
+   L37 sessionKey和qq
+
+   L145 sessionKey和qq
+
+   L159/160 二选一,SINGLE_SESSION模式不改动,反之相反
    
    在[这](https://docs.mirai.mamoe.net/mirai-api-http/adapter/HttpAdapter.html)看更多
    

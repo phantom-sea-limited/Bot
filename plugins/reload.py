@@ -24,7 +24,4 @@ async def _reload():
 @scheduler.scheduled_job("cron", hour="*/4", id="reload_http")
 async def _reload_http():
     logger.info("Reloading http!")
-    b = BOT()
-    b.reset()
-    r = b.verify()
-    b.bind(r["session"])
+    BOT().peekLatestMessage()
