@@ -47,13 +47,13 @@ class BOT():
         url = "peekLatestMessage?count={}".format(str(count))
         r = self.session.get(BASE + url)
         # LOG.info("GET:\t" + r.url + "\n\t" + r.text)
-        return r.json()
+        return self.check_and_reload(r.json())
 
     def get_mess_by_id(self, messageId, target):
         url = f"messageFromId?messageId={messageId}&target={target}"
         r = self.session.get(BASE + url)
         # LOG.info("GET:\t" + r.url + "\n\t" + r.text)
-        return r.json()
+        return self.check_and_reload(r.json())
 
     @staticmethod
     def Filtering_message(message: json, key: str):
@@ -147,6 +147,13 @@ class BOT():
         msg = {'target': 1019241536, 'messageChain': [
             {'type': 'Plain', 'text': f'消息发送异常{str(r)}'}]}
         self.sendMessage(msg, "sendFriendMessage")
+
+    def check_and_reload(self, r: dict):
+        if r["code"] != 0:
+            self.reset()
+            self.bind(self.verify()["session"])
+            return {"code": r["code"], "msg": r["msg"], "data": []}
+        return r
 
 
 if __name__ == "__main__":
