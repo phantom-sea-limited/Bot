@@ -10,6 +10,7 @@ require("nonebot_plugin_apscheduler")
 
 @scheduler.scheduled_job("cron", hour="*/1", id="xxx", args=[1], kwargs={"arg2": 2})
 async def run_every_1_hour(arg1, arg2):
+    time.sleep(5)
     t = time.strftime("%H", time.localtime())
     if int(t) > 7:
         n = Network({})

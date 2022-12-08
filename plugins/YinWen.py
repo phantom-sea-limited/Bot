@@ -55,9 +55,10 @@ async def __yw(event: GroupMessage):
             "{name}的发言吸引到了{god}的注视,这是一位神的注视,{name}的身上默默浮现出了一个淫纹\n{yw}",
             "{god}很无聊,祂随意扔了点东西,当然,{name}是礼物的收件人,这一切都是命中注定\n{yw}",
             "{god}赐予了{name}一件恐龙玩偶睡衣,但是触手衣装,{name}感觉腹部热热的,酱酱,是发光淫纹\n{yw}",
-            "{name}吵醒了{god},祂抢了触手酱的玩具,一个针筒,很快{name}醒来发现自己变成了小萝莉",
+            "{name}吵醒了{god},祂抢了触手酱的玩具,一个针筒,很快{name}醒来发现自己变成了小萝莉,还有淫纹\n{yw}",
             "{name}不知道干了啥,突然收到了一份充斥着无尽憎恨的礼物\n{yw}",
-            "{name}身上有非常神奇的吸引力,以至于吸引到了{god},不过,在这之后似乎被当做“朋友”消耗掉了"
+            "{name}身上有非常神奇的吸引力,以至于吸引到了{god},不过,在这之后似乎被当做“朋友”消耗掉了",
+            "过度的欲望使人疯狂,{god}在{name}的脑中轻轻呼唤,████"
         ],
         "淫纹": [
             "奴隶\n违抗命令时会感到痛苦与难受",
@@ -100,7 +101,7 @@ async def __yw(event: GroupMessage):
         ],
     }
     # print(event.dict())
-    if random.randint(0, 1000) <= 25:  # 激活判定
+    if random.randint(0, 1000) <= 11:  # 激活判定
         c = CONF("YinWen")
         t = time.strftime("%Y-%m-%d", time.localtime())
         if c.load(str(event.sender.id), "day")[0] != t:
@@ -118,7 +119,6 @@ async def __yw(event: GroupMessage):
                             name=event.sender.name,
                             yw=random.choice(ywmsg["淫纹"]),
                         )
-
                         await yw.finish(msg, quote=event.dict()["source"]["id"])
                     else:
                         msg = random.choice(ywmsg["手滑"]).format(
@@ -138,5 +138,5 @@ async def __yw(event: GroupMessage):
                 )
                 await yw.finish(msg, quote=event.dict()["source"]["id"])
 
-    if random.randint(0, 1000) <= 25:  # 激活判定
+    if random.randint(0, 1000) <= 50:  # 激活判定
         yw.finish(random.choice(face))
