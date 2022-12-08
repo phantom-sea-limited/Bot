@@ -43,7 +43,7 @@ class BOT():
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return r.json()
 
-    def alive(self, sessionKey="SINGLE_SESSION"):
+    def info(self, sessionKey="SINGLE_SESSION"):
         r = self.session.get(BASE + f"sessionInfo?sessionKey={sessionKey}")
         return self.check_and_reload(r.json())
 
@@ -154,8 +154,8 @@ class BOT():
         self.sendMessage(msg, "sendFriendMessage")
 
     def check_and_reload(self, r: dict):
-        if r["code"] != 0:
-            self.reset()
+        if r["code"] == 500:
+            # self.reset()
             # self.bind(self.verify()["session"]) # SINGLE_SESSION MODE NOT NEED bind() SINGLE_SESSION模式无需bind()
             self.verify()
             return {"code": r["code"], "msg": r["msg"], "data": []}
