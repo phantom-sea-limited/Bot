@@ -14,8 +14,7 @@ class huggingface():
     FFMPEG = os.path.join(".log", "ffmpeg.exe")
     log = LOG()
 
-    def __init__(self, temp_path=os.path.join(".log", "audio"), s=Network(
-            {"api-inference.huggingface.co": {"ip": "184.72.248.176"}})) -> None:
+    def __init__(self, temp_path=os.path.join(".log", "audio"), s=Network({})) -> None:
         if os.path.exists(temp_path) != True:
             os.mkdir(temp_path)
         self.path = temp_path
@@ -58,4 +57,10 @@ class huggingface():
 
 
 class Amadeus(huggingface):
+    '''https://huggingface.co/mio/amadeus'''
     API = "https://api-inference.huggingface.co/models/mio/amadeus"
+
+
+class Artoria(huggingface):
+    '''https://huggingface.co/mio/Artoria'''
+    API = "https://api-inference.huggingface.co/models/mio/Artoria"
