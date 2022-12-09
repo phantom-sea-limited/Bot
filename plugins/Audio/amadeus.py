@@ -14,7 +14,7 @@ class huggingface():
     FFMPEG = ".log\\audio\\ffmpeg.exe"
     log = LOG()
 
-    def __init__(self, temp_path=".log\\audio", s=Network(
+    def __init__(self, temp_path=os.path.join(".log", "audio"), s=Network(
             {"api-inference.huggingface.co": {"ip": "184.72.248.176"}})) -> None:
         if os.path.exists(temp_path) != True:
             os.mkdir(temp_path)
