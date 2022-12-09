@@ -26,6 +26,7 @@ from .handles.prts_handle import PrtsHandle
 from .handles.ba_handle import BaHandle
 
 from .config import draw_config
+from plugins.__Limit import Limit
 
 
 @dataclass
@@ -54,7 +55,8 @@ games = (
         reload_time=4,
     ),
     Game({"onmyoji", "阴阳师"}, OnmyojiHandle(), draw_config.ONMYOJI_FLAG),
-    Game({"pcr", "公主连结", "公主连接", "公主链接", "公主焊接"}, PcrHandle(), draw_config.PCR_FLAG),
+    Game({"pcr", "公主连结", "公主连接", "公主链接", "公主焊接"},
+         PcrHandle(), draw_config.PCR_FLAG),
     Game(
         {"pretty", "马娘", "赛马娘"},
         PrettyHandle(),
@@ -62,8 +64,9 @@ games = (
         max_count=200,
         reload_time=4,
     ),
-    Game({"prts", "方舟", "明日方舟"}, PrtsHandle(), draw_config.PRTS_FLAG, reload_time=4),
-    Game({"ba","碧蓝档案"},BaHandle(),draw_config.BA_FLAG),
+    Game({"prts", "方舟", "明日方舟"}, PrtsHandle(),
+         draw_config.PRTS_FLAG, reload_time=4),
+    Game({"ba", "碧蓝档案"}, BaHandle(), draw_config.BA_FLAG),
 )
 
 
@@ -94,7 +97,8 @@ def create_matchers():
                 .replace("卡", "card")
             )
             try:
-                res = game.handle.draw(num, pool_name=pool_name, user_id=event.get_user_id())
+                res = game.handle.draw(
+                    num, pool_name=pool_name, user_id=event.get_user_id())
                 # print(res)
             except:
                 logger.warning(traceback.format_exc())
@@ -142,7 +146,7 @@ def create_matchers():
         reload_keywords = {f"重载{keyword}卡池" for keyword in game.keywords}
         reset_keywords = {f"重置{keyword}抽卡" for keyword in game.keywords}
         if game.flag:
-            on_regex(draw_regex, priority=5, block=True).append_handler(
+            on_regex(draw_regex, rule=Limit(60).limit, priority=5, block=True).append_handler(
                 draw_handler(game)
             )
             on_keyword(
