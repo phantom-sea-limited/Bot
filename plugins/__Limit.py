@@ -13,12 +13,16 @@ class Limit():
         t = time.time()
         ot = c.load(id, "t")[0]
         if ot == False:
-            c.add(id, "t", t + self.t)
-            c.save()
             return True
         if float(ot) <= t:
-            c.add(id, "t", t + self.t)
-            c.save()
             return True
         else:
             return False
+
+    async def set(self, event: MessageEvent):
+        id = event.get_user_id()
+        c = CONF("limit")
+        t = time.time()
+        c.add(id, "t", t + self.t)
+        c.save()
+        return None

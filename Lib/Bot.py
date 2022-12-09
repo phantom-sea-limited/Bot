@@ -23,8 +23,8 @@ def get_qs(qs: json, key: str):
 class BOT():
     '''https://docs.mirai.mamoe.net/mirai-api-http/api/API.html'''
 
-    def __init__(self) -> None:
-        self.session = requests({})
+    def __init__(self, s=requests({})) -> None:
+        self.session = s
 
     def verify(self, verifyKey="1234567890"):
         data = {

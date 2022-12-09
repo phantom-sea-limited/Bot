@@ -27,6 +27,7 @@ from .handles.ba_handle import BaHandle
 
 from .config import draw_config
 from plugins.__Limit import Limit
+from nonebot.params import Depends
 
 
 @dataclass
@@ -73,7 +74,7 @@ games = (
 def create_matchers():
     def draw_handler(game: Game) -> T_Handler:
         async def handler(
-            matcher: Matcher, event: MessageEvent, args: Tuple[str, ...] = RegexGroup()
+            matcher: Matcher, event: MessageEvent, args: Tuple[str, ...] = RegexGroup(), d=Depends(Limit(60).set)
         ):
             pool_name, num, unit = args
             if num == "单":

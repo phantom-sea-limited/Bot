@@ -1,6 +1,7 @@
 from nonebot.adapters.mirai2.message import MessageChain, MessageSegment
 from nonebot import on_keyword
 from .__Limit import Limit
+from nonebot.params import Depends
 
 question = on_keyword(["???", "？？？"], priority=1, block=True)
 
@@ -22,7 +23,7 @@ setu = on_keyword(["涩图", "色图", "蛇图", "色色", "涩涩", "瑟图", "
 
 
 @setu.handle()
-async def __setu():
+async def __setu(d=Depends(Limit(60).set)):
     msg = MessageChain(MessageSegment.image(
         url="https://api.sirin.top/release/PIXIV/random/thumbnails"))
     await setu.finish(msg)
