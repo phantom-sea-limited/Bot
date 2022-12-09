@@ -22,7 +22,7 @@ async def _amadeus(event: GroupMessage, d=Depends(Limit(120).set)):
     fin = Amadeus(s=s).run(text)
     logger.debug(fin)
     if fin["error"]:
-        __amadeus.finish(fin["error"])
+        await __amadeus.finish(fin["error"])
     else:
         from Lib.Bot import BOT
         from Lib.Message import Message
