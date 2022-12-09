@@ -1,0 +1,31 @@
+from .Network import Network
+import re
+
+BING = "https://cn.bing.com/ttranslatev3?isVertical=1&&IG=26D2C06B2477362AAF32FA81CC90E54E&IID=translator.5022.5"
+BING_INDEX = "https://cn.bing.com/translator?ref=TThis&text={text}&from=&to={to}"
+
+
+class Bing():
+
+    def __init__(self, text, to, s=Network({})) -> None:
+        '''
+        to: ja
+        '''
+        self.s = s
+        time, token = self.__get_token(BING_INDEX.format(text=text, to=to))
+        data = f"&fromLang=auto-detect&text={text}&to={to}&token={token}&key={time}".encode("utf-8")
+        self.data = self.__translate(data)
+        self.text = self.data[0]["translations"][0]["text"]
+
+    def __get_token(self, url):
+        r = self.s.get(url)
+        r = re.findall(
+            r'''var params_RichTranslateHelper = \[([\s\S]+?)\]''', r.text)[0].split(",")
+        return r[0], r[1].replace("\"", "")
+
+    def __translate(self, data):
+        self.s.changeHeader({
+            "content-type": "application/x-www-form-urlencoded"
+        })
+        r = self.s.post(BING, data=data)
+        return r.json()

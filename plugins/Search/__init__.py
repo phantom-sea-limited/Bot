@@ -1,6 +1,7 @@
 from nonebot.adapters.mirai2.event import MessageEvent, GroupMessage
 from nonebot.adapters.mirai2.message import MessageChain, MessageSegment
 from nonebot import on_keyword, on_startswith
+from nonebot.matcher import Matcher
 
 soutu = on_keyword(["搜图"], priority=5, block=True)
 
@@ -26,10 +27,12 @@ async def __saucenao(event: GroupMessage):
 
 sousuo = on_startswith(["搜索"], priority=5, block=True)
 
+
 @sousuo.handle()
-async def _sousuo(event: GroupMessage):
-    msg = event.get_message().replace("搜索", "")
+async def _sousuo(matcher: Matcher, event: GroupMessage):
+    print(matcher.plugin_name)
+    msg = event.get_message().extract_plain_text().replace("搜索", "")
     if msg == "":
-        sousuo.finish("虚空搜索来咯")
+        await matcher.finish("虚空搜索来咯")
     else:
         from .book import BOOK
