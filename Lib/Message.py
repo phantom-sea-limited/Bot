@@ -20,6 +20,9 @@ class Message():
     def at(self, id: int):
         self.messageChain.append({"type": "At", "target": int(id)})
 
+    def voice(self, url=None, base64=None):
+        self.messageChain.append({"type": "Voice", "base64": base64, "url": url})
+
     def music(self, kind: str = "NeteaseCloudMusic", title: str = "", summary: str = "幻海实验室", jumpUrl: str = "", pictureUrl: str = "https://d.sirin.top/tmp_crop_decode.jpg", musicUrl: str = "https://api.phantom-sea-limited.ltd/music.mp3", brief: str = ""):
         self.messageChain.append({
             "type": "MusicShare",

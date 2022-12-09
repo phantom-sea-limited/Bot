@@ -1,6 +1,7 @@
 from Lib.Network import Network
 import os
 import subprocess
+import base64
 
 
 class LOG():
@@ -41,6 +42,11 @@ class huggingface():
             return {"error": "文件转换失败"}
         return {"error": False, "PATH": OUT}
 
+    def base64(self, PATH):
+        with open(PATH, "rb") as f:
+            b = f.read()
+        return str(base64.b64encode(b), encoding="utf-8")
+
     def run(self, word):
         r = self.input(word)
         if r["error"]:
@@ -48,7 +54,7 @@ class huggingface():
         r = self.transform(r["Path"])
         if r["error"]:
             return {"error": "SERVER ERROR:\n" + r["error"]}
-        return {"error": False, "PATH": r["PATH"]}
+        return {"error": False, "BASE64": self.base64(r["PATH"])}
 
 
 class Amadeus(huggingface):
