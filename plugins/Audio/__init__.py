@@ -1,11 +1,11 @@
-from nonebot import on_keyword
+from nonebot import on_startswith
 from nonebot.adapters.mirai2.event import GroupMessage
 from nonebot.log import logger
 from nonebot.params import Depends
 from plugins.__Limit import Limit
 
 
-__amadeus = on_keyword(["Amadeus", "红莉栖", "助手"],
+__amadeus = on_startswith(["Amadeus", "红莉栖", "助手"],
                        rule=Limit(120).limit, priority=1)
 
 
