@@ -10,8 +10,8 @@ class LOG():
 
 
 class huggingface():
-    API = "https://api-inference.huggingface.co/models/mio/amadeus"
-    FFMPEG = ".log\\audio\\ffmpeg.exe"
+    API = "https://api-inference.huggingface.co/models/"
+    FFMPEG = os.path.join(".log", "ffmpeg.exe")
     log = LOG()
 
     def __init__(self, temp_path=os.path.join(".log", "audio"), s=Network(

@@ -1,4 +1,4 @@
-from nonebot import on_startswith
+from nonebot import on_startswith, get_driver
 from nonebot.adapters.mirai2.event import GroupMessage
 from nonebot.log import logger
 from nonebot.params import Depends
@@ -6,7 +6,7 @@ from plugins.__Limit import Limit
 
 
 __amadeus = on_startswith(["Amadeus", "红莉栖", "助手"],
-                       rule=Limit(120).limit, priority=1)
+                          rule=Limit(120).limit, priority=1)
 
 
 @__amadeus.handle()
@@ -19,7 +19,10 @@ async def _amadeus(event: GroupMessage, d=Depends(Limit(120).set)):
     from .amadeus import Amadeus
     s = Network({"api-inference.huggingface.co": {"ip": "184.72.248.176"}})
     text = Bing(text, "ja", s).text
-    fin = Amadeus(s=s).run(text)
+    A = Amadeus(s=s)
+    driver = get_driver()
+    A.FFMPEG = getattr(driver.config, "ffmpeg", A.FFMPEG)
+    fin = A.run(text)
     logger.debug(fin)
     if fin["error"]:
         await __amadeus.finish(fin["error"])
