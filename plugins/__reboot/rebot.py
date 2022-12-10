@@ -1,4 +1,5 @@
 # Code from git@github.com:18870/nonebot-plugin-reboot.git
+# Copyright (c) 2022 18870 Licensed under the MIT license (see LICENSE).
 
 import threading
 from multiprocessing import get_context
