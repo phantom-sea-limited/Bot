@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from .amadeus import *
-from Lib.Network import Network
-from Lib.Translate import Bing
+from Lib.AsyncNetwork import Network
+from Lib.AsyncTranslate import Bing
 from plugins.__Limit import Limit
 from nonebot import get_driver, on_startswith
 from nonebot.log import logger
@@ -30,20 +30,21 @@ def handles():
             text = event.get_plaintext()
             for i in a.keywords:
                 text = text.replace(i, "")
-            text = Bing(text, "ja", s).text
+            text = await Bing(s).run(text, "ja")
+            # text = Bing(text, "ja").text
             A = a.handle
             driver = get_driver()
             A.FFMPEG = getattr(driver.config, "ffmpeg", A.FFMPEG)
-            fin = A.run(text)
+            fin = await A.run(text)
             logger.debug(fin)
             if fin["error"]:
                 await matcher.finish(fin["error"])
             else:
-                from Lib.Bot import BOT
+                from Lib.AsyncBot import BOT
                 from Lib.Message import Message
                 m = Message(event.sender.group.id)
                 m.voice(base64=fin["BASE64"])
-                r = BOT(s=s).sendMessage(m.get_message(), "sendGroupMessage")
+                r = await BOT(s=s).sendMessage(m.get_message(), "sendGroupMessage")
                 logger.info(r)
         return _de
 

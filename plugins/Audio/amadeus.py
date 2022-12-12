@@ -1,7 +1,8 @@
-from Lib.Network import Network
+from Lib.AsyncNetwork import Network
 import os
 import subprocess
 import base64
+import json
 
 
 class LOG():
@@ -20,15 +21,15 @@ class huggingface():
         self.path = temp_path
         self.s = s
 
-    def input(self, word):
+    async def input(self, word):
         data = {"inputs": word}
-        r = self.s.post(self.API, json=data)
+        r = await self.s.post(self.API, json=data)
         try:
-            return r.json()
+            return await r.json()
         except Exception:
             Path = os.path.join(self.path, f"{word}.flac")
             with open(Path, "wb") as f:
-                f.write(r.content)
+                f.write(await r.read())
             return {"error": False, "Path": Path}
 
     def transform(self, PATH):
@@ -46,8 +47,8 @@ class huggingface():
             b = f.read()
         return str(base64.b64encode(b), encoding="utf-8")
 
-    def run(self, word):
-        r = self.input(word)
+    async def run(self, word):
+        r = await self.input(word)
         if r["error"]:
             return {"error": "API ERROR:\n" + r["error"]}
         r = self.transform(r["Path"])

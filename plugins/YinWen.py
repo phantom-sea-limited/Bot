@@ -138,5 +138,5 @@ async def __yw(event: GroupMessage):
                 )
                 await yw.finish(msg, quote=event.dict()["source"]["id"])
 
-    if random.randint(0, 1000) <= 50:  # 激活判定
+    if random.randint(0, 1000) <= 20:  # 激活判定
         await yw.finish(random.choice(face))
