@@ -12,7 +12,8 @@ class BOOK():
     async def Graph(self, word, start, end):
         try:
             URL = BASE + f"Graph?wd={word}&api"
-            r = await self.s.get(URL).json()
+            r = await self.s.get(URL)
+            r = await r.json(content_type="text/json")
             i = start - 1
             fin = ""
             while i < end:
@@ -27,7 +28,8 @@ class BOOK():
     async def Sharepoint(self, word, start, end):
         try:
             URL = BASE + f"Sharepoint?wd={word}&api"
-            r = await self.s.get(URL).json()
+            r = await self.s.get(URL)
+            r = await r.json(content_type="text/json")
             i = start - 1
             fin = ""
             while i < end:

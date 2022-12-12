@@ -30,19 +30,11 @@ sousuo = on_startswith(["搜索"], priority=5, block=True)
 
 @sousuo.handle()
 async def _sousuo(matcher: Matcher, event: GroupMessage):
-    print(matcher.plugin_name)
     msg = event.get_message().extract_plain_text().replace("搜索", "")
     if msg == "":
         await matcher.finish("虚空搜索来咯")
     else:
         from .book import BOOK
         b = BOOK()
-        try:
-            fin = await b.Graph(msg, 1, 5)
-            await matcher.finish(fin)
-        except:
-            try:
-                fin = await b.Sharepoint(msg, 1, 5)
-                await matcher.finish(fin)
-            except:
-                await matcher.finish("搜索大失败")
+        fin = await b.Graph(msg, 1, 5)
+        await matcher.finish(fin)
