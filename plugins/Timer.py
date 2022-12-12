@@ -15,7 +15,7 @@ async def run_every_1_hour(arg1, arg2):
     if int(t) > 7:
         n = Network({})
         r = await n.get(f"https://api.sirin.top/release/PIXIV/ranking?mode=daily&top={int(t)-7}")
-        r = r.json()
+        r = await r.json()
         m = Message(960290056)
         m.plain(f'''PID {r["body"]["id"]}\n''')
         m.image(r["body"]["urls"]["original"].replace(
