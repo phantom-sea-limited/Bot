@@ -1,4 +1,4 @@
-from Lib.Network import Network
+from Lib.AsyncNetwork import Network
 from nonebot.log import logger
 
 BASE = "https://api.phantom-sea-limited.ltd/release/API/search/"
@@ -6,13 +6,13 @@ BASE2 = "https://service-av2jrwkk-1258642780.hk.apigw.tencentcs.com/release/API/
 
 
 class BOOK():
-    def __init__(self) -> None:
-        self.s = Network({})
+    def __init__(self, s=Network({})) -> None:
+        self.s = s
 
-    def Graph(self, word, start, end):
+    async def Graph(self, word, start, end):
         try:
             URL = BASE + f"Graph?wd={word}&api"
-            r = self.s.get(URL).json()
+            r = await self.s.get(URL).json()
             i = start - 1
             fin = ""
             while i < end:
@@ -23,11 +23,11 @@ class BOOK():
             import traceback
             logger.error(traceback.format_exc())
             return "搜索结果被吞了,留下了500的字样"
-    
-    def Sharepoint(self, word, start, end):
+
+    async def Sharepoint(self, word, start, end):
         try:
             URL = BASE + f"Sharepoint?wd={word}&api"
-            r = self.s.get(URL).json()
+            r = await self.s.get(URL).json()
             i = start - 1
             fin = ""
             while i < end:

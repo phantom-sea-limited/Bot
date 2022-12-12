@@ -36,3 +36,13 @@ async def _sousuo(matcher: Matcher, event: GroupMessage):
         await matcher.finish("虚空搜索来咯")
     else:
         from .book import BOOK
+        b = BOOK()
+        try:
+            fin = await b.Graph(msg, 1, 5)
+            await matcher.finish(fin)
+        except:
+            try:
+                fin = await b.Sharepoint(msg, 1, 5)
+                await matcher.finish(fin)
+            except:
+                await matcher.finish("搜索大失败")

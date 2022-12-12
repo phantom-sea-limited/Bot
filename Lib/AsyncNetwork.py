@@ -66,8 +66,9 @@ class Network():
                 url = url.replace(domain, ip)
                 h["host"] = domain
         try:
-            async with s.get(url, headers=h, **kwargs) as r:
-                await r.text(errors="ignore")
+            # async with s.get(url, headers=h, **kwargs) as r:
+            #     await r.text(errors="ignore")
+            r = await s.get(url, headers=h, **kwargs)
             # r = await s.get(url, headers=h, **kwargs)
             # await r.close()
         except Exception as e:
