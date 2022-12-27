@@ -23,8 +23,6 @@ Keys = [
         path=f"c:/wwwroot/api.phantom-sea-limited.ltd/image/chat/question.png"))),
     Key(["刑啊", "枪毙", "枪决", "击毙"], MessageChain(MessageSegment.image(
         path=f"c:/wwwroot/api.phantom-sea-limited.ltd/image/chat/kill.png"))),
-    # Key(["涩图", "色图", "蛇图", "色色", "涩涩", "瑟图", "瑟瑟"], MessageChain(MessageSegment.image(
-    #     url="https://api.sirin.top/release/PIXIV/random/thumbnails")), Limit=Limit(60).limit, Depend=Limit(60).set),
     Key(["涩图", "色图", "蛇图", "色色", "涩涩", "瑟图", "瑟瑟"], function=Pixiv.random,
         Limit=Limit(60).limit, Depend=Limit(60).set),
     Key(["你好笨"], "不要打破第四面墙，你这小聪明鬼"),
