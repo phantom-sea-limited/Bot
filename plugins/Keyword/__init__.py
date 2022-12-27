@@ -1,15 +1,17 @@
 from nonebot.adapters.mirai2.message import MessageChain, MessageSegment
 from nonebot import on_keyword
 from nonebot.matcher import Matcher
-from .__Limit import Limit
+from plugins.__Limit import Limit
 from dataclasses import dataclass
 from nonebot.params import Depends
+from .pixiv import Pixiv
 
 
 @dataclass
 class Key:
     key: list
-    reply: MessageChain
+    reply: MessageChain = False
+    function: callable = False
     block: bool = True
     Limit: bool = False
     Depend: bool = False
@@ -21,8 +23,10 @@ Keys = [
         path=f"c:/wwwroot/api.phantom-sea-limited.ltd/image/chat/question.png"))),
     Key(["刑啊", "枪毙", "枪决", "击毙"], MessageChain(MessageSegment.image(
         path=f"c:/wwwroot/api.phantom-sea-limited.ltd/image/chat/kill.png"))),
-    Key(["涩图", "色图", "蛇图", "色色", "涩涩", "瑟图", "瑟瑟"], MessageChain(MessageSegment.image(
-        url="https://api.sirin.top/release/PIXIV/random/thumbnails")), Limit=Limit(60).limit, Depend=Limit(60).set),
+    # Key(["涩图", "色图", "蛇图", "色色", "涩涩", "瑟图", "瑟瑟"], MessageChain(MessageSegment.image(
+    #     url="https://api.sirin.top/release/PIXIV/random/thumbnails")), Limit=Limit(60).limit, Depend=Limit(60).set),
+    Key(["涩图", "色图", "蛇图", "色色", "涩涩", "瑟图", "瑟瑟"], function=Pixiv.random,
+        Limit=Limit(60).limit, Depend=Limit(60).set),
     Key(["你好笨"], "不要打破第四面墙，你这小聪明鬼"),
     Key(["不想去"], "我们只是尘埃虫豸之辈而已"),
     Key(["不行"], "不，我们不会抛弃我们的人们!"),
@@ -40,12 +44,18 @@ Keys = [
 
 def Handle():
     def run(k: Key):
+        async def _main():
+            if k.reply != False:
+                return k.reply
+            else:
+                return await k.function()
+
         async def _handle(matcher: Matcher, d=Depends(k.Depend)):
-            await matcher.finish(k.reply)
+            await matcher.finish(await _main())
 
         async def _handle2(matcher: Matcher):
-            print(matcher.plugin)
-            await matcher.finish(k.reply)
+            await matcher.finish(await _main())
+
         if k.Depend != False:
             return _handle
         else:

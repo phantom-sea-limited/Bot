@@ -20,5 +20,5 @@ async def run_every_1_hour(arg1, arg2):
         m.plain(f'''PID {r["body"]["id"]}\n''')
         m.image(r["body"]["urls"]["original"].replace(
             "i.pixiv.re", "piv.deception.world"))
-        r = await BOT().sendMessage(m.get_message(), "sendGroupMessage")
+        r = await BOT(n).sendMessage(m.get_message(), "sendGroupMessage")
         logger.info(str(r))
