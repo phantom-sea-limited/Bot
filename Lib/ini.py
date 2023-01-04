@@ -12,7 +12,8 @@ class CONF():
         self.LOG = ""
         if not os.path.exists(conf_path):
             os.makedirs(conf_path)
-        self.CONF = configparser.ConfigParser()
+        self.CONF = configparser.RawConfigParser()  #不检测存在%的内容，否则抛出异常
+        # self.CONF = configparser.ConfigParser() 
         self.F = os.path.join(f"{conf_path}", f"{name}.ini")
         try:
             self.CONF.read(self.F, encoding="utf-8")
