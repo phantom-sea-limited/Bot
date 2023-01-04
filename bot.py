@@ -7,7 +7,8 @@ from nonebot.adapters.mirai2 import Adapter as MIRAI2Adapter
 # Custom your logger
 #
 from nonebot.log import logger, default_format
-logger.add("debug.log",
+import os
+logger.add(os.path.join(".log", "debug", "debug.log"),
            rotation="00:00",
            diagnose=False,
            level="DEBUG",

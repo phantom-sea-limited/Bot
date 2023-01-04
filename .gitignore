@@ -145,4 +145,5 @@ venv.7z
 .env.dev
 .env.prod
 poetry.lock
+test
 test.py

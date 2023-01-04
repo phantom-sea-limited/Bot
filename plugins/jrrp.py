@@ -52,7 +52,7 @@ async def __jrrp_cq(event: MessageEvent):
         else:
             await jrrp_cq.finish("今日人品和今日抽签只能二选一的说")
     else:
-        star = random.randint(-3, 3)
+        star = f'{random.choice(["","2023","ba"])}{random.randint(-3, 3)}'
         c.add(str(event.sender.id), "type", "jrcq")
         c.add(str(event.sender.id), "star", star)
         c.add(str(event.sender.id), "day", t)
