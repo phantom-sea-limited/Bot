@@ -15,7 +15,7 @@ class Key:
     block: bool = True
     Limit: bool = False
     Depend: bool = False
-    priority: int = 2
+    priority: int = 3
 
 
 Keys = [
