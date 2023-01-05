@@ -29,6 +29,7 @@ def handles():
             else:
                 r = False
             if r:
+                await a.handle.analysis(word)
                 await matcher.finish("订阅成功")
             else:
                 await matcher.finish("订阅失败,订阅已存在或其他原因")
@@ -80,7 +81,7 @@ def handles():
             i.keyword + "订阅列表", priority=1, block=True
         ).append_handler(showsubscribe)
         on_startswith(
-            i.keyword + "更新订阅", priority=1, block=True
+            [i.keyword + "更新订阅", i.keyword + "订阅更新"], priority=1, block=True
         ).append_handler(fetchsubscribe)
         scheduler.add_job(fetchsubscribe, trigger="cron",
                           hour="*/1", minute="30")

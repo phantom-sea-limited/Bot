@@ -88,6 +88,12 @@ class Acgnx(RSS):
         old = self.cache(word)
         new = await self.rss(word)
         new = await new.json()
+        if new["items"] == []:  # 获取内容为空,代表着未初始化
+            self.cache(word, {"items": [{"title": []}]})
+            return new
+        if old == "[]":  # 缓存为空,获取内容不为空,即订阅更新
+            self.cache(word, new)
+            return new
         if old == False:  # 初始化订阅
             self.cache(word, new)
             new["items"] = []
