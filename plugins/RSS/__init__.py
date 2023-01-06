@@ -63,6 +63,7 @@ def handles():
                 for i in r:
                     msg = await a.handle.analysis(i)
                     msg = a.handle.transform(msg)
+                    logger.info(i + "\t" + str(msg))
                     if msg != False:
                         m = Message(a.target)
                         m.plain(msg)
