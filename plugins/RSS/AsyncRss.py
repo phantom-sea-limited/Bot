@@ -44,6 +44,7 @@ class RSS():
             all.remove(url)
         except Exception:
             return False
+        self.c.remove(self.sec, url)
         self.c.add(self.sec, "subscribe", json.dumps(all))
         self.c.save()
         return True
