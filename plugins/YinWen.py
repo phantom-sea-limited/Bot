@@ -4,7 +4,7 @@ import random
 import time
 from Lib.Bot import BOT
 from Lib.ini import CONF
-from .face import face
+from .__face import face
 # 淫纹刻印时间到
 
 
