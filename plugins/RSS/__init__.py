@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from .AsyncRss import *
 from nonebot import on_startswith
 from nonebot.matcher import Matcher
+from nonebot.log import logger
 from nonebot.adapters.mirai2.event import Event
 from nonebot_plugin_apscheduler import scheduler
 from Lib.AsyncBot import BOT
@@ -66,6 +67,7 @@ def handles():
                         m = Message(a.target)
                         m.plain(msg)
                         r = await BOT(a.handle.s).sendMessage(m.get_message(), "sendGroupMessage")
+                        logger.info(str(r))
 
         return _subscribe, _unsubscribe, _showsubscribe, _fetchsubscribe
 
