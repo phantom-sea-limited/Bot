@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from nonebot import on_startswith
 from nonebot.matcher import Matcher
 from nonebot.log import logger
-from nonebot.adapters.mirai2.event import Event
+from nonebot.adapters.mirai2.event import MessageEvent
 from nonebot_plugin_apscheduler import scheduler
 from Lib.AsyncBot import BOT
 from Lib.Message import Message
@@ -23,7 +23,7 @@ SUB = (
 
 def handles():
     def run(a: Rss):
-        async def _subscribe(matcher: Matcher, event: Event):
+        async def _subscribe(matcher: Matcher, event: MessageEvent):
             word = event.get_plaintext().replace(a.keyword + "订阅", "")
             if word != "":
                 r = a.handle.subscribe(word)
@@ -35,7 +35,7 @@ def handles():
             else:
                 await matcher.finish("订阅失败,订阅已存在或其他原因")
 
-        async def _unsubscribe(matcher: Matcher, event: Event):
+        async def _unsubscribe(matcher: Matcher, event: MessageEvent):
             word = event.get_plaintext().replace(a.keyword + "取消订阅", "")
             if word != "":
                 r = a.handle.unsubscribe(word)
@@ -70,10 +70,16 @@ def handles():
                         r = await BOT(a.handle.s).sendMessage(m.get_message(), "sendGroupMessage")
                         logger.info(str(r))
 
-        return _subscribe, _unsubscribe, _showsubscribe, _fetchsubscribe
+        async def _search(matcher: Matcher, event: MessageEvent):
+            word = event.get_plaintext().replace(a.keyword + "搜索", "")
+            r = await a.handle.rss(word)
+            r = await r.json()
+            await matcher.finish(a.handle.transform(r, msg=""))
+
+        return _subscribe, _unsubscribe, _showsubscribe, _fetchsubscribe, _search
 
     for i in SUB:
-        subscribe, unsubscribe, showsubscribe, fetchsubscribe = run(i)
+        subscribe, unsubscribe, showsubscribe, fetchsubscribe, search = run(i)
         on_startswith(
             i.keyword + "订阅", priority=2, block=True
         ).append_handler(subscribe)
@@ -86,6 +92,9 @@ def handles():
         on_startswith(
             [i.keyword + "更新订阅", i.keyword + "订阅更新"], priority=1, block=True
         ).append_handler(fetchsubscribe)
+        on_startswith(
+            i.keyword + "搜索", priority=1, block=True
+        ).append_handler(search)
         scheduler.add_job(fetchsubscribe, trigger="cron",
                           hour="*/1", minute="30")
 

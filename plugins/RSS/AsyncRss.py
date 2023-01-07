@@ -61,7 +61,7 @@ class RSS():
         "重点重构对象,提取缓存与实时RSS订阅的内容区别,即更新的内容"
         return await self.rss(url).json()
 
-    def transform(self, data):
+    def transform(self, data, msg=""):
         "重点重构对象,将更新的条目整合成一条消息"
         return data
 
@@ -113,10 +113,10 @@ class Acgnx(RSS):
             new["items"] = []
             return new
 
-    def transform(self, new: json):
+    def transform(self, new: json, msg="叮叮,侦测到订阅更新\n"):
         if new["items"] == []:
             return False
-        msg = f"叮叮,侦测到订阅更新\n{new['feed']['title']}\n\n"
+        msg = f"{msg}{new['feed']['title']}\n\n"
         for i in new["items"]:
             msg += f"{i['categories'][0]} {i['title']}\n{i['link'].replace('https://share.acgnx.se','https://share.acgnx.net')}\n\n"
         return msg[:-2]
