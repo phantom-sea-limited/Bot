@@ -1,6 +1,6 @@
 import json
-from Lib.Network import Network
 from urllib.parse import quote
+from Lib.Network import Network
 from Lib.ini import CONF
 
 
