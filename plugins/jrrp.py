@@ -1,11 +1,11 @@
-from nonebot.adapters.mirai2.event import MessageEvent
-from nonebot.adapters.mirai2.message import MessageChain, MessageSegment
-from nonebot import on_keyword
 import random
 import time
+from nonebot import on_keyword
+from nonebot.params import Depends
+from nonebot.adapters.mirai2.event import MessageEvent
+from nonebot.adapters.mirai2.message import MessageChain, MessageSegment
 from Lib.ini import CONF
 from .__Limit import Limit
-from nonebot.params import Depends
 
 
 jrrp_de = on_keyword(["今日人品", "人品", "jrrp"], priority=2,

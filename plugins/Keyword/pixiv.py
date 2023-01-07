@@ -1,5 +1,5 @@
-from Lib.AsyncNetwork import Network
 from nonebot.adapters.mirai2.message import MessageSegment
+from Lib.AsyncNetwork import Network
 
 
 class Pixiv():

@@ -1,7 +1,7 @@
-from nonebot.adapters.mirai2.event import MessageEvent, GroupMessage
-from nonebot.adapters.mirai2.message import MessageChain, MessageSegment
 from nonebot import on_keyword, on_startswith
 from nonebot.matcher import Matcher
+from nonebot.adapters.mirai2.event import GroupMessage
+
 
 soutu = on_keyword(["搜图"], priority=5, block=True)
 

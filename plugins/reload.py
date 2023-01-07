@@ -1,9 +1,9 @@
-from nonebot_plugin_apscheduler import scheduler
 from nonebot import require
 from nonebot.log import logger
-from .__reboot.rebot import Reloader
 from nonebot import on_keyword
+from nonebot_plugin_apscheduler import scheduler
 from Lib.AsyncBot import BOT
+from .__reboot.rebot import Reloader
 
 require("nonebot_plugin_apscheduler")
 reload = on_keyword(["Reload"], priority=1, block=True)

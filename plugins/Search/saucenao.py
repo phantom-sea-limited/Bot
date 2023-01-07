@@ -15,11 +15,8 @@ class saucenao():
 
     def get(self):
         url = f"https://saucenao.com/search.php?api_key={key}&db=999&output_type=2&testmode=1&numres=16&url={self.url}"
-        n = Network({"saucenao.com":"104.26.1.232"})
+        n = Network({"saucenao.com": "104.26.1.232"})
         self.r = n.get(url).json()
 
-    
     def analysis(self):
         pass
-
-

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from .AsyncRss import *
 from nonebot import on_startswith
 from nonebot.matcher import Matcher
 from nonebot.log import logger
@@ -7,6 +6,7 @@ from nonebot.adapters.mirai2.event import Event
 from nonebot_plugin_apscheduler import scheduler
 from Lib.AsyncBot import BOT
 from Lib.Message import Message
+from .AsyncRss import *
 
 
 @dataclass

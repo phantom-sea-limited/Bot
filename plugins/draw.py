@@ -1,8 +1,9 @@
-from nonebot.adapters.mirai2.event import MessageEvent
-from nonebot import on_keyword
 import random
-from .__Limit import Limit
+from nonebot import on_keyword
+from nonebot.adapters.mirai2.event import MessageEvent
 from nonebot.params import Depends
+from .__Limit import Limit
+
 
 ability = on_keyword(["超能力"], rule=Limit(20).limit, priority=1, block=True)
 

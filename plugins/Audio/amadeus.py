@@ -1,8 +1,7 @@
-from Lib.AsyncNetwork import Network
 import os
 import subprocess
 import base64
-import json
+from Lib.AsyncNetwork import Network
 
 
 class LOG():

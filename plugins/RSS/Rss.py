@@ -1,7 +1,7 @@
+import json
 from Lib.Network import Network
 from urllib.parse import quote
 from Lib.ini import CONF
-import json
 
 
 class RSS():

@@ -1,7 +1,7 @@
-from nonebot.adapters.mirai2.event import GroupMessage
-from nonebot import on_type
 import random
 import time
+from nonebot import on_type
+from nonebot.adapters.mirai2.event import GroupMessage
 from Lib.Bot import BOT
 from Lib.ini import CONF
 from .__face import face

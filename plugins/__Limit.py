@@ -1,6 +1,6 @@
+import time
 from nonebot.adapters.mirai2.event import MessageEvent
 from Lib.ini import CONF
-import time
 
 
 class Limit():
