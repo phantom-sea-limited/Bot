@@ -24,27 +24,27 @@ class RSS():
             self.c.add(self.sec, quote(url), data)
             self.c.save()
 
-    def subscribe(self, url):
+    def subscribe(self, data):
         all = self.c.load(self.sec, "subscribe")[0]
         if all == False:
             all = []
         else:
             all = json.loads(all)
-        if url not in all:
-            all.append(url)
+        if data not in all:
+            all.append(data)
             self.c.add(self.sec, "subscribe", json.dumps(all))
             self.c.save()
             return True
         return False
 
-    def unsubscribe(self, url):
+    def unsubscribe(self, data):
         all = self.c.load(self.sec, "subscribe")[0]
         all = json.loads(all)
         try:
-            all.remove(url)
+            all.remove(data)
         except Exception:
             return False
-        self.c.remove(self.sec, url)
+        self.c.remove(self.sec, data["word"])
         self.c.add(self.sec, "subscribe", json.dumps(all))
         self.c.save()
         return True
@@ -97,12 +97,6 @@ class Acgnx(RSS):
 
     def cache(self, word, data: json = {"items": [{"title": ""}]}):
         return super().cache(word, data["items"][0]["title"])
-
-    def subscribe(self, word):
-        return super().subscribe(word)
-
-    def unsubscribe(self, word):
-        return super().unsubscribe(word)
 
     async def analysis(self, word):
         old = self.cache(word)

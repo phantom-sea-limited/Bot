@@ -13,21 +13,28 @@ from .AsyncRss import *
 class Rss:
     keyword: str
     handle: RSS
-    target: int
 
 
 SUB = (
-    Rss("acgnx", Acgnx(), 960290056),
-    Rss("热辣漫画", RelaComic(), 960290056)
+    Rss("acgnx", Acgnx()),
+    Rss("热辣漫画", RelaComic())
 )
 
 
 def handles():
     def run(a: Rss):
+        def get_id(event: MessageEvent):
+            try:
+                return event.sender.group.id, "sendGroupMessage"
+            except Exception:
+                return event.sender.id, "sendFriendMessage"
+
         async def _subscribe(matcher: Matcher, event: MessageEvent):
             word = event.get_plaintext().replace(a.keyword + "订阅", "")
+            id, type = get_id(event)
             if word != "":
-                r = a.handle.subscribe(word)
+                r = a.handle.subscribe(
+                    {"word": word, "target": id, "type": type})
             else:
                 r = False
             if r:
@@ -41,8 +48,10 @@ def handles():
 
         async def _unsubscribe(matcher: Matcher, event: MessageEvent):
             word = event.get_plaintext().replace(a.keyword + "取消订阅", "")
+            id, type = get_id(event)
             if word != "":
-                r = a.handle.unsubscribe(word)
+                r = a.handle.unsubscribe(
+                    {"word": word, "target": id, "type": type})
             else:
                 r = False
             if r:
@@ -50,12 +59,17 @@ def handles():
             else:
                 await matcher.finish("取消订阅失败,订阅不存在或其他原因")
 
-        async def _showsubscribe(matcher: Matcher):
+        async def _showsubscribe(matcher: Matcher, event: MessageEvent):
+            id = get_id(event)[0]
             r = a.handle.showsubscribe()
-            if r == []:
+            fin = []
+            for i in r:
+                if i["target"] == int(id):
+                    fin.append(i["word"])
+            if fin == []:
                 await matcher.finish(f"关于{a.keyword}的订阅为空")
             msg = f"关于{a.keyword}的订阅如下\n"
-            for i in r:
+            for i in fin:
                 msg += f"{i}\n"
             await matcher.finish(msg[:-1])
 
@@ -65,13 +79,13 @@ def handles():
                 pass
             else:
                 for i in r:
-                    msg = await a.handle.analysis(i)
+                    msg = await a.handle.analysis(i["word"])
                     msg = a.handle.transform(msg)
-                    logger.info(i + "\t" + str(msg))
+                    logger.info(i["word"] + "\t" + str(msg))
                     if msg != False:
-                        m = Message(a.target)
+                        m = Message(i["target"])
                         m.plain(msg)
-                        r = await BOT(a.handle.s).sendMessage(m.get_message(), "sendGroupMessage")
+                        r = await BOT(a.handle.s).sendMessage(m.get_message(), i["type"])
                         logger.info(str(r))
 
         async def _search(matcher: Matcher, event: MessageEvent):
