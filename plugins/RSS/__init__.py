@@ -72,9 +72,11 @@ def handles():
 
         async def _search(matcher: Matcher, event: MessageEvent):
             word = event.get_plaintext().replace(a.keyword + "搜索", "")
-            r = await a.handle.rss(word)
-            r = await r.json()
-            await matcher.finish(a.handle.transform(r, msg=""))
+            r = await a.handle.search(word)
+            if r == None:
+                await matcher.finish(a.keyword + "搜索功能未启用")
+            else:
+                await matcher.finish(r)
 
         return _subscribe, _unsubscribe, _showsubscribe, _fetchsubscribe, _search
 
@@ -97,6 +99,13 @@ def handles():
         ).append_handler(search)
         scheduler.add_job(fetchsubscribe, trigger="cron",
                           hour="*/1", minute="30")
+        timer = i.handle.Timer()
+        if timer == []:
+            pass
+        else:
+            for j in timer:
+                scheduler.add_job(j["function"], trigger="cron",
+                                  hour=j["cron"]["hour"], minute=j["cron"]["minute"])
 
 
 handles()

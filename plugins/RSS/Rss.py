@@ -65,6 +65,20 @@ class RSS():
         "重点重构对象,将更新的条目整合成一条消息"
         return data
 
+    def Timer(self):
+        '''需要定时器的功能,返回值为空列表或\n        
+        [{
+            "function": callable,
+            "cron": {
+                "hour": "*/12",
+                "minute": "*"
+            }
+        }]'''
+        return []
+
+    def search(self, word):
+        "实现搜索功能,正常应该返回str"
+
 
 class Acgnx(RSS):
     sec = "Acgnx"
@@ -106,10 +120,13 @@ class Acgnx(RSS):
             new["items"] = []
             return new
 
-    def transform(self, new: json):
+    def transform(self, new: json, msg="叮叮,侦测到订阅更新\n"):
         if new["items"] == []:
             return False
-        msg = f"叮叮,侦测到订阅更新\n{new['feed']['title']}\n\n"
+        msg = f"{msg}{new['feed']['title']}\n\n"
         for i in new["items"]:
             msg += f"{i['categories'][0]} {i['title']}\n{i['link'].replace('https://share.acgnx.se','https://share.acgnx.net')}\n\n"
         return msg[:-2]
+
+    def search(self, word):
+        return self.transform(self.rss(word), msg="")
