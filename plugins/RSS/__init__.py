@@ -18,6 +18,7 @@ class Rss:
 
 SUB = (
     Rss("acgnx", Acgnx(), 960290056),
+    Rss("热辣漫画", RelaComic(), 960290056)
 )
 
 
@@ -30,7 +31,10 @@ def handles():
             else:
                 r = False
             if r:
-                await a.handle.analysis(word)
+                try:
+                    await a.handle.analysis(word)
+                except RSSException as e:
+                    await matcher.finish(e.args[0])
                 await matcher.finish("订阅成功")
             else:
                 await matcher.finish("订阅失败,订阅已存在或其他原因")

@@ -61,7 +61,7 @@ class RSS():
         "重点重构对象,提取缓存与实时RSS订阅的内容区别,即更新的内容"
         return self.rss(url).json()
 
-    def transform(self, data):
+    def transform(self, data, msg=""):
         "重点重构对象,将更新的条目整合成一条消息"
         return data
 
@@ -78,6 +78,11 @@ class RSS():
 
     def search(self, word):
         "实现搜索功能,正常应该返回str"
+
+
+class RSSException(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
 
 
 class Acgnx(RSS):
@@ -130,3 +135,61 @@ class Acgnx(RSS):
 
     def search(self, word):
         return self.transform(self.rss(word), msg="")
+
+
+class RelaComic(RSS):
+    header = {
+        "referer": "https://m.relamanhua.com/",
+        "origin": "https://m.relamanhua.com",
+        "accept": "application/json"
+    }
+    API = "https://api.relamanhua.com/api/v3/"
+    sec = "RelaComic"
+
+    def __init__(self, n=Network({}), c=CONF("rss")) -> None:
+        super().__init__(n, c)
+        self.s.changeHeader(self.header)
+
+    def rss(self, url):
+        return self.s.get(self.API + url).json()
+
+    get = rss
+
+    def conf(self):
+        url = "system/network2?platform=1"
+        return self.get(url)
+
+    def analysis(self, word):
+        url = f"comic2/{word}?platform=1"
+        new = self.rss(url)
+        uuid = new["results"]["comic"]["last_chapter"]["uuid"]
+        if new["code"] != 200:
+            raise RSSException(new["message"])
+        old = self.cache(word)
+        if old == False:  # 初始化订阅
+            self.cache(word, uuid)
+            return False
+        else:
+            if old == uuid:
+                return False
+            else:
+                self.cache(word, uuid)
+                return new
+
+    def transform(self, data, msg="叮叮,侦测到订阅更新\n"):
+        if data == False:
+            return False
+        msg += f'{data["results"]["comic"]["name"]}\t作者 {data["results"]["comic"]["author"][0]["name"]}\n'
+        msg += f'https://m.relamanhua.com/v2h5/comicContent/{data["results"]["comic"]["path_word"]}/{data["results"]["comic"]["last_chapter"]["uuid"]}'
+        return msg
+
+    def search(self, word):
+        url = f"search/comic?platform=1&q={word}&limit=20&offset=0&_update=true"
+        r = self.get(url)
+        if r["results"]["list"] == []:
+            return "什么都没搜到"
+        else:
+            msg = ""
+            for i in r["results"]["list"]:
+                msg += f'{i["name"]}\t作者 {i["author"][0]["name"]}\n订阅关键词\t{i["path_word"]}\n\n'
+            return msg[:-2]
