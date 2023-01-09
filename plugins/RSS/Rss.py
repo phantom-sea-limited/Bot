@@ -207,7 +207,11 @@ class Pixiv(RSS):
     sec = "Pixiv"
 
     def __init__(self, n=Network({"www.pixiv.net": {"ip": "210.140.92.193"}}), c=CONF("rss"), PHPSESSID="") -> None:
-        "PHPSESSID为登录后Cookie中名为PHPSESSID的对应值,请登录后按F12打开开发者工具寻找"
+        '''
+        PHPSESSID为登录后Cookie中名为PHPSESSID的对应值\t请登录后按F12打开开发者工具寻找\n
+        可以选择不登录,即保持为空,但是获取到的数据会有一定时间的延后(Pixiv官方的锅)\n
+        目前找不到不登录不出现延时的API
+        '''
         super().__init__(n, c)
         self.header["Cookie"] = f"PHPSESSID={PHPSESSID}"
         self.s.changeHeader(header=self.header)
@@ -215,6 +219,14 @@ class Pixiv(RSS):
     def get(self, url, **kwargs):
         r = self.s.get(url, **kwargs)
         return r.json()
+
+    def get_by_pid(self, pid):
+        url = f"https://www.pixiv.net/ajax/illust/{pid}"
+        return self.get(url)
+
+    def geturls_by_pid(self, pid):
+        url = f"https://www.pixiv.net/ajax/illust/{pid}/pages"
+        return self.get(url)
 
     def get_by_uid(self, uid):
         url = f"https://www.pixiv.net/ajax/user/{uid}/profile/top?lang=zh"
@@ -268,3 +280,7 @@ class Pixiv(RSS):
                     fin[type] = tmp
             self.cache(uid, new)
             return fin
+
+    def transform(self, data, msg="叮叮,侦测到订阅更新\n"):
+        for i in data:
+            print(i)
