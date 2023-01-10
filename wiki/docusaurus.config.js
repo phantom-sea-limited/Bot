@@ -58,10 +58,8 @@ const config = {
         },
         items: [
           {
-            label: "指南",
-            type: "doc",
-            docId: "guide/start",
-            category: "guide",
+            label: '指南',
+            to: '/docs/category/指南',
             position: 'right',
           },
           {
@@ -79,7 +77,7 @@ const config = {
             items: [
               {
                 label: '指南',
-                to: '/docs/intro',
+                to: '/docs/category/指南',
               },
             ],
           },
