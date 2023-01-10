@@ -1,0 +1,25 @@
+[data-theme='dark']:root {
+    --plugin-blue: aqua;
+    --plugin-green: lightgreen;
+}
+
+:root {
+    --plugin-blue: blue;
+    --plugin-green: forestgreen;
+}
+
+#red {
+    color: red;
+}
+
+#orange {
+    color: orange;
+}
+
+#blue {
+    color: var(--plugin-blue);
+}
+
+#green {
+    color: var(--plugin-green);
+}

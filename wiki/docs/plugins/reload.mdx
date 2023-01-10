@@ -1,0 +1,29 @@
+---
+sidebar-position: 3
+title: 重启
+description: 让我们重启一切
+
+options:
+  menu:
+    weight: 10
+    category: plugin
+---
+import style from './theme.css';
+
+# 重启
+
+:::tip插件信息
+- 插件位置：[plugins/reload.py](https://github.com/phantom-sea-limited/Bot/blob/main/plugins/reload.py)
+- 插件类别：补丁
+- 频率限制：<span id="blue">20s</span>
+- 可扩展性：<span id="red">NO</span>
+- 更新状态：<span id="orange">等待更新</span>
+
+
+- 关键词：超能力
+- 输出：文字
+:::
+
+这东西用于重启整个NoneBot
+
+原本是因为NoneBot与MiraiBot不在一台设备上，中间建立的ws链接时不时会中断，所以设计了这个用于解决bot断线的问题，但实际上这个断线问题是随缘发生的，并不能解决，但是可以用于一天重置一次Bot，毕竟python很神秘，说不准就哪天炸了，一天重启一次也挺好
