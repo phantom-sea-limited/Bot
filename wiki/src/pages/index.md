@@ -1,6 +1,5 @@
 ---
 description: There is no garden without its weeds.
-sidebar_position: 1
 ---
 
 # 树状图设计者
