@@ -17,7 +17,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'phantom-sea-limited', // Usually your GitHub org/user name.
-  projectName: 'doc', // Usually your repo name.
+  projectName: 'Bot', // Usually your repo name.
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -37,7 +37,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/phantom-sea-limited/Bot/wiki',
+            'https://github.com/phantom-sea-limited/Bot/tree/main/wiki',
         },
         blog: false,
         theme: {
@@ -58,14 +58,14 @@ const config = {
         },
         items: [
           {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: '树状图设计者',
+            label: "指南",
+            type: "doc",
+            docId: "guide/start",
+            category: "guide",
+            position: 'right',
           },
-          {href: 'https://sky.phantom-sea-limited.ltd/', label: '星空殿', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/phantom-sea-limited/Bot',
             label: 'GitHub',
             position: 'right',
           },
@@ -78,7 +78,7 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: '传送门',
+                label: '指南',
                 to: '/docs/intro',
               },
             ],
