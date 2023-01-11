@@ -29,7 +29,7 @@ options:
 如果你只登录一个账号,你可以直接复制如下配置到该路径`config/net.mamoe.mirai-api-http/setting.yml`
 
 多账户请看[官方文档](https://docs.mirai.mamoe.net/mirai-api-http/#setting-yml-%E6%A8%A1%E6%9D%BF)
-```yml
+```yml title=config/net.mamoe.mirai-api-http/setting.yml
 ## 配置文件中的值，全为默认值
 
 ## 启用的 adapter, 内置有 http, ws, reverse-ws, webhook
@@ -78,7 +78,7 @@ adapterSettings:
 
 推荐修改登录device类型(默认`ANDROID_PHONE`), 手动修改config/Console/AutoLogin.yml
 
-```yml
+```yml title=config/Console/AutoLogin.yml
 accounts: 
   - # 账号, 现只支持 QQ 数字账号
     account: 123456

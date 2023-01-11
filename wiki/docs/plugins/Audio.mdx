@@ -1,0 +1,104 @@
+---
+sidebar-position: 7
+title: AI语音
+description: AI语音合成(API)
+
+options:
+  menu:
+    weight: 10
+    category: plugin
+---
+import style from '../theme.css';
+
+# AI语音
+
+:::tip插件信息
+- 插件位置：[plugins/Audio/*](https://github.com/phantom-sea-limited/Bot/blob/main/plugins/Audio/)
+- 插件作者：[Rcrwrate](https://github.com/Rcrwrate)
+- 插件类别：娱乐
+- 频率限制：<span id="blue">120s</span>
+- 可扩展性：<span id="green">YES</span>
+- 更新状态：<span id="green">已完工</span>
+
+
+- 触发方式：
+  - 首部关键字：由插件内定义
+    - 现有关键字：Amadeus，红莉栖，助手，saber，阿尔托莉雅，王
+- 输出类型：音频
+:::
+
+### 功能说明
+
+通过白嫖huggingface现有的API，完成群友的AI老婆梦
+
+> Amadeus，红莉栖，助手 **对应**  命运石之门中的牧濑红莉栖
+>
+> saber，阿尔托莉雅，王 **对应**  Fate中的亚瑟王
+
+以上述关键词为首，[关键词]+[一句话]，中间空格可有可无，会调用对应的AI语音模型
+
+由于是白嫖的API，可能会出现API未初始化等的问题，可以自行建设API使用
+
+### 扩展
+
+#### 简单扩展
+
+```python title=plugins/Audio/amadeus.py
+class Amadeus(huggingface):
+    '''https://huggingface.co/mio/amadeus'''
+    API = "https://api-inference.huggingface.co/models/mio/amadeus"
+```
+
+简单的扩展，你只需要去[huggingface.co](https://huggingface.co)上去寻找开放的API即可
+
+只需要修改Class下的API地址即可快速扩展，这是第一步
+
+第二步，在插件初始化的时候激活对应模块
+
+```python title=plugins/Audio/__init__.py
+s = Network({})   # 网络模块
+
+
+@dataclass
+class Audio:    #   数据集
+    keywords: list  # 关键词
+    handle: huggingface # 对应的衍生类
+
+
+voice = (
+    Audio(["Amadeus", "红莉栖", "助手"], Amadeus(s=s)),
+    Audio(["saber", "阿尔托莉雅", "王"], Artoria(s=s)),
+)
+```
+在voice中添加你的扩展关键词和扩展类
+
+#### 高级扩展
+
+你或许在别的地方寻找到了可用的API或者其他等等
+
+```python title=plugins/Audio/amadeus.py
+class Test(huggingface):
+    def __init__(self, temp_path=os.path.join(".log", "audio"), s=Network({})) -> None:
+        super().__init__(temp_path, s)
+
+    async def input(self, word):
+        Path = os.path.join(self.path, f"{word}.flac")
+        return {"error": False, "Path": Path}
+```
+
+重构input函数，无论中间通过什么方法进行语音的生成，这都不重要，只需要你将返回值规范为如上所示，Path为生成的音频位置
+
+如果需要抛出错误，请返回`{"error": "错误信息"}`
+
+更多的，你可以重构这一切，这里是相关函数的功能
+
+- run：执行主函数
+- input：音频生成
+- transform：音频转码
+- base64：提取音频base64
+
+### 可能需要的说明
+
+由于并没有寻找到Nonebot Mirai适配器发送音频的具体方法，并且没有看到对音频发送的base64模式支持~~（方便异地部署，即Nonebot与Mirai Bot不在一台设备上）~~，所以采用了独立于Nonebot Mirai适配器之外的发送方式
+
+关于此方式，请查看[**Lib/bot**](../Lib/Bot.mdx)

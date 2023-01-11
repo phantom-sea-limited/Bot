@@ -1,7 +1,7 @@
 ---
-sidebar-position: 1
-title: 今日人品
-description: 康康你的今日运势
+sidebar-position: 4
+title: Timer
+description: 准点发色图
 
 options:
   menu:
@@ -10,20 +10,20 @@ options:
 ---
 import style from '../theme.css';
 
-# 今日人品
+# Timer
 
 :::tip插件信息
-- 插件位置：[plugins/jrrp.py](https://github.com/phantom-sea-limited/Bot/blob/main/plugins/jrrp.py)
+- 插件位置：[plugins/Timer.py](https://github.com/phantom-sea-limited/Bot/blob/main/plugins/Timer.py)
 - 插件作者：[Rcrwrate](https://github.com/Rcrwrate)
 - 插件类别：娱乐
-- 频率限制：<span id="blue">120s</span>
+- 频率限制：<span id="green">NO</span>
 - 可扩展性：<span id="red">NO</span>
 - 更新状态：<span id="green">已完工</span>
 
 
 - 触发方式：
-  - 关键词：(今日)人品、jrrp、(今日)抽签
-- 输出类型：图文
+  - 定时：每小时
+- 输出类型：图
 :::
 
 
@@ -32,3 +32,7 @@ import style from '../theme.css';
 从Dice!跑团插件继承过来的老传统，这可不能丢，这个功能是第一个编写的
 
 这个功能没有扩展性，也没啥好说明的东西，直接看代码就行了
+
+### 可能需要的说明
+
+这个插件的消息发送方式采用的是非Nonebot的方式，具体请查看[**Lib/bot**](../Lib/Bot.mdx)

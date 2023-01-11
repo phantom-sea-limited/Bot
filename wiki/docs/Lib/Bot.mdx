@@ -1,0 +1,50 @@
+---
+sidebar-position: 1
+title: Bot
+description: 独立于Nonebot的Bot解决方案
+
+options:
+  menu:
+    weight: 10
+    category: Lib
+---
+
+import style from '../theme.css';
+
+# Bot
+
+:::tipLib信息
+- 库位置：[Lib/Bot.py](https://github.com/phantom-sea-limited/Bot/blob/main/Lib/Bot.py) [Lib/AsyncBot.py](https://github.com/phantom-sea-limited/Bot/blob/main/Lib/AsyncBot.py)
+- 库作者：[Rcrwrate](https://github.com/Rcrwrate)
+- 库状态：<span id="green">已完工</span>
+:::
+
+### 前情提要
+
+由于NoneBot2 Mirai HTTP API适配器中
+```python title=nonebot\adapters\mirai2\bot.pyi
+    async def send(
+        self, *,
+        event: Event,
+        message: Union[MessageChain, MessageSegment, str],
+        at_sender: Optional[bool] = False,
+        quote: Optional[int] = None
+    ):
+        """
+        :说明:
+
+            根据 ``event`` 向触发事件的主体发送信息
+
+        :参数:
+
+            * ``event: Event``: Event对象
+            * ``message: Union[MessageChain, MessageSegment, str]``: 要发送的消息
+            * ``at_sender: bool``: 是否 @ 事件主体
+        """
+        ...
+```
+send中的Event参数是必选参数，如果要Bot平白无故主动去发送消息，似乎还得Make a fake Event，可行是可行，但是懒得去摸索了（迫真），下次再搞
+
+因此，提供了一套基于Miari HTTP API中HTTP模式的Bot模板
+
+~~就算WS链接因为异地部署(Nonebot与Mirai Bot不在一台设备上)的原因断了，HTTP依旧坚挺~~
