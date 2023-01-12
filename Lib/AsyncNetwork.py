@@ -31,6 +31,8 @@ def get_qs(qs, key):
 
 
 class Network():
+    dfheader = dfheader.copy()
+
     def __init__(self, hostTips: dict, log_path=".log", log_level=20, proxies={"http": None, "https": None}) -> None:
         '''
         hostTips = {
@@ -56,7 +58,7 @@ class Network():
         return self.s
 
     async def get(self, url, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
-        h = Header.headerchange(headers, noDefaultHeader, changeDefaultHeader)
+        h = Header.headerchange(self, headers, noDefaultHeader, changeDefaultHeader)
         s = await self.session()
         domain = url.split("/")[2]
         conf = get_qs(self.table, domain)
@@ -83,7 +85,7 @@ class Network():
         return r
 
     async def post(self, url, data=False, json={}, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
-        h = Header.headerchange(headers, noDefaultHeader, changeDefaultHeader)
+        h = Header.headerchange(self, headers, noDefaultHeader, changeDefaultHeader)
         s = await self.session()
         domain = url.split("/")[2]
         conf = get_qs(self.table, domain)
@@ -97,15 +99,16 @@ class Network():
                 # async with s.post(url, json=json, headers=h,
                 #                   **kwargs) as r:
                 #     await r.text(errors="ignore")
-                r = await s.post(url, json=json, headers=h,**kwargs)
+                r = await s.post(url, json=json, headers=h, **kwargs)
                 data = json
             else:
                 # async with s.post(url, data=data, headers=h,
                 #                   **kwargs) as r:
-                r = await s.post(url, data=data, headers=h,**kwargs)
-                    # await r.text(errors="ignore")
+                r = await s.post(url, data=data, headers=h, **kwargs)
+                # await r.text(errors="ignore")
         except Exception as e:
-            self.LOG.error(f"[POST][ERROR]\t\t{url}\t{domain}\t{data}\t{json}\t{e.args}\n{traceback.format_exc()}")
+            self.LOG.error(
+                f"[POST][ERROR]\t\t{url}\t{domain}\t{data}\t{json}\t{e.args}\n{traceback.format_exc()}")
             raise Exception(e.args)
         self.LOG.info(f"[POST][INFO]\t\t{int(r.status)}\t{r.url}\t{domain}")
         try:
@@ -116,7 +119,7 @@ class Network():
         return r
 
     def put(self, url, data=False, json={}, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
-        h = Header.headerchange(headers, noDefaultHeader, changeDefaultHeader)
+        h = Header.headerchange(self, headers, noDefaultHeader, changeDefaultHeader)
         domain = url.split("/")[2]
         conf = get_qs(self.table, domain)
         if conf != False:
@@ -144,22 +147,21 @@ class Network():
         return r
 
     def changeHeader(self, header, noDefaultHeader=False):
-        return Header.headerchange(header, noDefaultHeader, changeDefaultHeader=True)
+        return Header.headerchange(self, header, noDefaultHeader, changeDefaultHeader=True)
 
 
 class Header():
     @staticmethod
-    def headerchange(header, noDefaultHeader=False, changeDefaultHeader=False):
-        global dfheader
+    def headerchange(N: Network, header, noDefaultHeader=False, changeDefaultHeader=False):
         if header:
             if noDefaultHeader:
                 h = header
             else:
                 h = Header.addheader(dfheader, header)
         else:
-            h = dfheader.copy()
+            h = N.dfheader.copy()
         if changeDefaultHeader:
-            dfheader = h.copy()
+            N.dfheader = h.copy()
         return h
 
     @staticmethod

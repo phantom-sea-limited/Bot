@@ -29,6 +29,8 @@ def get_qs(qs, key):
 
 
 class Network():
+    dfheader = dfheader.copy()
+
     def __init__(self, hostTips: dict, log_path=".log", log_level=20, proxies={"http": None, "https": None}) -> None:
         '''
         hostTips = {
@@ -49,7 +51,7 @@ class Network():
         self.table = hostTips
 
     def get(self, url, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
-        h = Header.headerchange(headers, noDefaultHeader, changeDefaultHeader)
+        h = Header.headerchange(self, headers, noDefaultHeader, changeDefaultHeader)
         domain = url.split("/")[2]
         conf = get_qs(self.table, domain)
         if conf != False:
@@ -71,7 +73,7 @@ class Network():
         return r
 
     def post(self, url, data=False, json={}, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
-        h = Header.headerchange(headers, noDefaultHeader, changeDefaultHeader)
+        h = Header.headerchange(self, headers, noDefaultHeader, changeDefaultHeader)
         domain = url.split("/")[2]
         conf = get_qs(self.table, domain)
         if conf != False:
@@ -99,7 +101,7 @@ class Network():
         return r
 
     def put(self, url, data=False, json={}, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
-        h = Header.headerchange(headers, noDefaultHeader, changeDefaultHeader)
+        h = Header.headerchange(self, headers, noDefaultHeader, changeDefaultHeader)
         domain = url.split("/")[2]
         conf = get_qs(self.table, domain)
         if conf != False:
@@ -110,11 +112,11 @@ class Network():
         try:
             if data == False:
                 r = self.s.put(url, json=json, headers=h,
-                                verify=False, **kwargs)
+                               verify=False, **kwargs)
                 data = json
             else:
                 r = self.s.put(url, data=data, headers=h,
-                                verify=False, **kwargs)
+                               verify=False, **kwargs)
         except Exception as e:
             self.LOG.error(f"[POST][ERROR]\t\t{url}\t{domain}\t{e.args}")
             raise Exception(e.args)
@@ -127,22 +129,21 @@ class Network():
         return r
 
     def changeHeader(self, header, noDefaultHeader=False):
-        return Header.headerchange(header, noDefaultHeader, changeDefaultHeader=True)
+        return Header.headerchange(self, header, noDefaultHeader, changeDefaultHeader=True)
 
 
 class Header():
     @staticmethod
-    def headerchange(header, noDefaultHeader=False, changeDefaultHeader=False):
-        global dfheader
+    def headerchange(N: Network, header, noDefaultHeader=False, changeDefaultHeader=False):
         if header:
             if noDefaultHeader:
                 h = header
             else:
                 h = Header.addheader(dfheader, header)
         else:
-            h = dfheader.copy()
+            h = N.dfheader.copy()
         if changeDefaultHeader:
-            dfheader = h.copy()
+            N.dfheader = h.copy()
         return h
 
     @staticmethod
