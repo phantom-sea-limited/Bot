@@ -8,6 +8,14 @@ class Message():
         if quote != 0:
             self.fin["quote"] = int(quote)
 
+    def input(self, messageChain):
+        if isinstance(messageChain, str):
+            self.plain(messageChain)
+        elif isinstance(messageChain, MesssagePart):
+            self.messageChain = messageChain.messageChain
+        else:
+            self.messageChain = messageChain
+
     def plain(self, text: str):
         self.messageChain.append({"type": "Plain", "text": text})
 
@@ -58,3 +66,62 @@ class Message():
         self.fin["messageChain"] = self.messageChain
         self.messageChain = []
         return self.fin
+
+
+class MesssagePart:
+    messageChain = []
+
+    def __init__(self, messageChain=[]) -> None:
+        self.messageChain = messageChain
+
+    def __str__(self) -> str:
+        return str(self.messageChain)
+
+    @classmethod
+    def plain(cls, text: str):
+        return cls([{"type": "Plain", "text": text}])
+
+    @classmethod
+    def image(cls, url: str):
+        return cls([{"type": "Image", "url": url}])
+
+    @classmethod
+    def FlashImage(cls, url: str):
+        return cls([{"type": "FlashImage", "url": url}])
+
+    @classmethod
+    def at(cls, id: int):
+        return cls([{"type": "At", "target": int(id)}])
+
+    @classmethod
+    def voice(cls, url=None, base64=None):
+        return cls([{"type": "Voice", "base64": base64, "url": url}])
+
+    @classmethod
+    def music(cls, kind: str = "NeteaseCloudMusic", title: str = "", summary: str = "幻海实验室", jumpUrl: str = "", pictureUrl: str = "https://d.sirin.top/tmp_crop_decode.jpg", musicUrl: str = "https://api.phantom-sea-limited.ltd/music.mp3", brief: str = ""):
+        return cls([{
+            "type": "MusicShare",
+            "kind": kind,
+            "title": title,
+            "summary": summary,
+            "jumpUrl": jumpUrl,
+            "pictureUrl": pictureUrl,
+            "musicUrl": musicUrl,
+            "brief": brief
+        }])
+
+    @classmethod
+    def Forward(cls, self, messageId: int = 0, senderId: int = 0, senderName: str = ""):
+        forward = {"type": "Forward", "nodeList": []}
+        if messageId != 0:
+            forward["nodeList"].append({"messageId": messageId})
+        if senderId != 0 and senderName != "":
+            forward["nodeList"].append({
+                "senderId": int(senderId),
+                "senderName": senderName,
+                "messageChain": self.messageChain
+            })
+        return cls([forward])
+
+    def __add__(self, other):
+        return MesssagePart(self.messageChain + other.messageChain)

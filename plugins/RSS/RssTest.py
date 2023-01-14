@@ -1,7 +1,7 @@
 import xmltodict
 from Lib.Network import Network
 from Lib.ini import CONF
-from .Rss import *
+from .Rss import RSS
 
 
 class RssTest(RSS):
