@@ -13,8 +13,11 @@ class Message():
             self.plain(messageChain)
         elif isinstance(messageChain, MesssagePart):
             self.messageChain = messageChain.messageChain
-        else:
+        elif isinstance(messageChain, list):
             self.messageChain = messageChain
+        else:
+            raise ValueError(
+                f"Type {type(messageChain).__name__} is not supported")
 
     def plain(self, text: str):
         self.messageChain.append({"type": "Plain", "text": text})
@@ -29,7 +32,8 @@ class Message():
         self.messageChain.append({"type": "At", "target": int(id)})
 
     def voice(self, url=None, base64=None):
-        self.messageChain.append({"type": "Voice", "base64": base64, "url": url})
+        self.messageChain.append(
+            {"type": "Voice", "base64": base64, "url": url})
 
     def music(self, kind: str = "NeteaseCloudMusic", title: str = "", summary: str = "幻海实验室", jumpUrl: str = "", pictureUrl: str = "https://d.sirin.top/tmp_crop_decode.jpg", musicUrl: str = "https://api.phantom-sea-limited.ltd/music.mp3", brief: str = ""):
         self.messageChain.append({
@@ -76,6 +80,9 @@ class MesssagePart:
 
     def __str__(self) -> str:
         return str(self.messageChain)
+
+    def __getitem__(self, __item: str):
+        return self.messageChain[__item]
 
     @classmethod
     def plain(cls, text: str):

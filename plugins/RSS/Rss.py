@@ -62,7 +62,7 @@ class RSS():
         return self.rss(url).json()
 
     def transform(self, data, msg=""):
-        "重点重构对象,将更新的条目整合成一条消息"
+        "重点重构对象,将更新的条目整合成一条消息,返回MesssagePart或其可兼容值"
         return data
 
     def Timer(self):
@@ -77,7 +77,7 @@ class RSS():
         return []
 
     def search(self, word):
-        "实现搜索功能,正常应该返回str"
+        "实现搜索功能,正常应该返回MessageChain或其可兼容值"
 
 
 class RSSException(Exception):

@@ -3,6 +3,7 @@ from nonebot import on_startswith
 from nonebot.matcher import Matcher
 from nonebot.log import logger
 from nonebot.adapters.mirai2.event import MessageEvent
+from nonebot.adapters.mirai2.message import MessageChain
 from nonebot_plugin_apscheduler import scheduler
 from Lib.AsyncBot import BOT
 from Lib.Message import Message
@@ -84,7 +85,7 @@ def handles():
                     logger.info(i["word"] + "\t" + str(msg))
                     if msg != False:
                         m = Message(i["target"])
-                        m.plain(msg)
+                        m.input(msg)
                         r = await BOT(a.handle.s).sendMessage(m.get_message(), i["type"])
                         logger.info(str(r))
 
@@ -94,7 +95,7 @@ def handles():
             if r == None:
                 await matcher.finish(a.keyword + "搜索功能未启用")
             else:
-                await matcher.finish(r)
+                await matcher.finish(MessageChain(r))
 
         return _subscribe, _unsubscribe, _showsubscribe, _fetchsubscribe, _search
 
