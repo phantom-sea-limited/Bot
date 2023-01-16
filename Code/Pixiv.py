@@ -30,6 +30,14 @@ class Pixiv():
     #     return self.get(
     #         url, headers={"Accept": "application/dns-json"}, noDefaultHeader=True)
 
+    def notification(self):
+        url = "https://www.pixiv.net/ajax/notification"
+        return self.get(url)
+
+    def check_login_state(self) -> bool:
+        r = self.notification()
+        return r["error"] == False
+
     def get_by_pid(self, pid):
         url = f"https://www.pixiv.net/ajax/illust/{pid}"
         return self.get(url)
@@ -40,4 +48,8 @@ class Pixiv():
 
     def get_by_uid(self, uid):
         url = f"https://www.pixiv.net/ajax/user/{uid}/profile/top?lang=zh"
+        return self.get(url)
+
+    def get_by_Nid(self, NoverID):
+        url = f"https://www.pixiv.net/ajax/novel/{NoverID}?lang=zh"
         return self.get(url)

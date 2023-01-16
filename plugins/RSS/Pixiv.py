@@ -1,45 +1,16 @@
 import json
 from Lib.Network import Network
 from Lib.ini import CONF
-from .Rss import RSS
+from Code.Pixiv import Pixiv
+from .Rss import RSS, RSSException
 
 
-class Pixiv(RSS):
-    "https://sirin.coding.net/public/api/Pixiv/git/files/master/method.py"
-
-    header = {
-        "Host": "www.pixiv.net",
-        "referer": "https://www.pixiv.net/",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36 Edg/96.0.1054.53",
-    }
-    Mirror = "piv.deception.world"
+class PixivRSS(RSS, Pixiv):
     sec = "Pixiv"
 
     def __init__(self, n=Network({"www.pixiv.net": {"ip": "210.140.92.193"}}), c=CONF("rss"), PHPSESSID="") -> None:
-        '''
-        PHPSESSID为登录后Cookie中名为PHPSESSID的对应值\t请登录后按F12打开开发者工具寻找\n
-        可以选择不登录,即保持为空,但是获取到的数据会有一定时间的延后(Pixiv官方的锅)\n
-        目前找不到不登录不出现延时的API
-        '''
-        super().__init__(n, c)
-        self.header["Cookie"] = f"PHPSESSID={PHPSESSID}"
-        self.s.changeHeader(header=self.header)
-
-    def get(self, url, **kwargs):
-        r = self.s.get(url, **kwargs)
-        return r.json()
-
-    def get_by_pid(self, pid):
-        url = f"https://www.pixiv.net/ajax/illust/{pid}"
-        return self.get(url)
-
-    def geturls_by_pid(self, pid):
-        url = f"https://www.pixiv.net/ajax/illust/{pid}/pages"
-        return self.get(url)
-
-    def get_by_uid(self, uid):
-        url = f"https://www.pixiv.net/ajax/user/{uid}/profile/top?lang=zh"
-        return self.get(url)
+        RSS.__init__(self, n, c)
+        Pixiv.__init__(self, n, PHPSESSID)
 
     @staticmethod
     def top(data):
@@ -54,11 +25,18 @@ class Pixiv(RSS):
             fin["manga"] = list(data["body"]["manga"].keys())[0]
         if data["body"]["novels"] != []:
             fin["novels"] = list(data["body"]["novels"].keys())[0]
+        if fin == {"illusts": "", "manga": "", "novels": ""}:
+            raise RSSException(
+                f'订阅对象{data["body"]["extraData"]["meta"]["alternateLanguages"]["ja"]}所有数据都是空的，这是否有些问题？')
         return fin
 
     def cache(self, uid, data: str = ""):
         if data == "":
-            return json.loads(super().cache(str(uid), ""))
+            tmp = super().cache(str(uid), "")
+            if tmp == False:
+                return False
+            else:
+                return json.loads(tmp)
         fin = self.top(data)
         return super().cache(str(uid), json.dumps(fin))
 
