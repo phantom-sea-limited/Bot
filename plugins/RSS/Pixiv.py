@@ -1,6 +1,7 @@
 import json
 from Lib.Network import Network
 from Lib.ini import CONF
+from Lib.Message import MesssagePart
 from Code.Pixiv import Pixiv
 from .Rss import RSS, RSSException
 
@@ -69,5 +70,19 @@ class PixivRSS(RSS, Pixiv):
             return fin
 
     def transform(self, data, msg="叮叮,侦测到订阅更新\n"):
-        for i in data:
-            print(i)
+        msg = MesssagePart.plain(msg)
+        if data["illusts"] != []:
+            i = data["illusts"][0]
+            r = self.get_by_pid(i)
+            msg += MesssagePart.plain(
+                f'PID\t{i}\n{r["body"]["illustTitle"]}')
+            msg += MesssagePart.image(r["body"]["urls"]
+                                        ["original"].replace("i.pximg.net", self.Mirror))
+            if len(data["illusts"]) > 1:
+                msg += MesssagePart.plain(f'\n\n更多更新请查看https://www.pixiv.net/users/{r["body"]["userId"]}')
+        if data["manga"] != []:
+            for i in data["manga"]:
+                pass
+        if data["novels"] != []:
+            for i in data["novels"]:
+                msg += MesssagePart.plain(i)

@@ -6,6 +6,8 @@ from Lib.ini import CONF
 
 class RSS():
     sec = "RSS"
+    hour = "*/1"
+    minute = "30"
 
     def __init__(self, n=Network({}), c=CONF("rss")) -> None:
         self.s = n

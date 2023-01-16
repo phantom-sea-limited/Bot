@@ -80,8 +80,11 @@ def handles():
                 pass
             else:
                 for i in r:
-                    msg = await a.handle.analysis(i["word"])
-                    msg = a.handle.transform(msg)
+                    try:
+                        msg = await a.handle.analysis(i["word"])
+                        msg = a.handle.transform(msg)
+                    except RSSException as e:
+                        msg = e.args[0]
                     logger.info(i["word"] + "\t" + str(msg))
                     if msg != False:
                         m = Message(i["target"])
@@ -117,7 +120,7 @@ def handles():
             i.keyword + "搜索", priority=1, block=True
         ).append_handler(search)
         scheduler.add_job(fetchsubscribe, trigger="cron",
-                          hour="*/1", minute="30")
+                          hour=i.handle.hour, minute=i.handle.minute)
         timer = i.handle.Timer()
         if timer == []:
             pass
