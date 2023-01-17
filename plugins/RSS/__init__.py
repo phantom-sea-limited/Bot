@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from nonebot import on_startswith
+from nonebot import on_startswith, get_driver
 from nonebot.matcher import Matcher
 from nonebot.log import logger
 from nonebot.adapters.mirai2.event import MessageEvent
@@ -8,7 +8,11 @@ from nonebot_plugin_apscheduler import scheduler
 from Lib.AsyncBot import BOT
 from Lib.Message import Message
 from .AsyncRss import *
-
+from .AsyncRela import RelaComic
+from .AsyncPixiv import PixivRSS
+driver = get_driver()
+PHPSESSID = getattr(driver.config, "pixiv_phpsessid", "")
+print(PHPSESSID)
 
 @dataclass
 class Rss:
@@ -18,7 +22,8 @@ class Rss:
 
 SUB = (
     Rss("acgnx", Acgnx()),
-    Rss("热辣漫画", RelaComic())
+    Rss("热辣漫画", RelaComic()),
+    Rss("pixiv", PixivRSS(PHPSESSID=PHPSESSID))
 )
 
 
@@ -82,7 +87,7 @@ def handles():
                 for i in r:
                     try:
                         msg = await a.handle.analysis(i["word"])
-                        msg = a.handle.transform(msg)
+                        msg = await a.handle.transform(msg)
                     except RSSException as e:
                         msg = e.args[0]
                     logger.info(i["word"] + "\t" + str(msg))
@@ -94,7 +99,10 @@ def handles():
 
         async def _search(matcher: Matcher, event: MessageEvent):
             word = event.get_plaintext().replace(a.keyword + "搜索", "")
-            r = await a.handle.search(word)
+            try:
+                r = await a.handle.search(word)
+            except RSSException as e:
+                await matcher.finish(e.args[0])
             if r == None:
                 await matcher.finish(a.keyword + "搜索功能未启用")
             else:

@@ -1,4 +1,4 @@
-from Lib.Network import Network
+from Lib.AsyncNetwork import Network
 
 
 class Pixiv():
@@ -25,41 +25,41 @@ class Pixiv():
             self.Logined = True
         self.s.changeHeader(header=self.header)
 
-    def get(self, url, **kwargs):
-        r = self.s.get(url, **kwargs)
-        return r.json()
+    async def get(self, url, **kwargs):
+        r = await self.s.get(url, **kwargs)
+        return await r.json()
 
     # def dns(self):
     #     url = "https://1.1.1.1/dns-query?name=www.pixiv.net&type=A"
     #     return self.get(
     #         url, headers={"Accept": "application/dns-json"}, noDefaultHeader=True)
 
-    def notification(self):
+    async def notification(self):
         url = "https://www.pixiv.net/ajax/notification"
-        return self.get(url)
+        return await self.get(url)
 
-    def check_login_state(self) -> bool:
+    async def check_login_state(self) -> bool:
         "登录正常返回True"
-        r = self.notification()
+        r = await self.notification()
         return r["error"] == False
 
-    def check_logined_state(self) -> bool:
+    async def check_logined_state(self) -> bool:
         "登录状态匹配设置返回True"
-        r = self.check_login_state()
+        r = await self.check_login_state()
         return r == self.Logined
 
-    def get_by_pid(self, pid):
+    async def get_by_pid(self, pid):
         url = f"https://www.pixiv.net/ajax/illust/{pid}"
-        return self.get(url)
+        return await self.get(url)
 
-    def geturls_by_pid(self, pid):
+    async def geturls_by_pid(self, pid):
         url = f"https://www.pixiv.net/ajax/illust/{pid}/pages"
-        return self.get(url)
+        return await self.get(url)
 
-    def get_by_uid(self, uid):
+    async def get_by_uid(self, uid):
         url = f"https://www.pixiv.net/ajax/user/{uid}/profile/top?lang=zh"
-        return self.get(url)
+        return await self.get(url)
 
-    def get_by_Nid(self, NoverID):
+    async def get_by_Nid(self, NoverID):
         url = f"https://www.pixiv.net/ajax/novel/{NoverID}?lang=zh"
-        return self.get(url)
+        return await self.get(url)

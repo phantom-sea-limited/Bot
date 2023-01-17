@@ -1,13 +1,15 @@
 import json
-from Lib.Network import Network
+from Lib.AsyncNetwork import Network
 from Lib.ini import CONF
 from Lib.Message import MesssagePart
-from Code.Pixiv import Pixiv
-from .Rss import RSS, RSSException
+from Code.AsyncPixiv import Pixiv
+from .AsyncRss import RSS, RSSException
 
 
 class PixivRSS(RSS, Pixiv):
     sec = "Pixiv"
+    hour = "*"
+    minute = "*/10"
 
     def __init__(self, n=Network({"www.pixiv.net": {"ip": "210.140.92.193"}}), c=CONF("rss"), PHPSESSID="") -> None:
         RSS.__init__(self, n, c)
@@ -41,8 +43,8 @@ class PixivRSS(RSS, Pixiv):
         fin = self.top(data)
         return super().cache(str(uid), json.dumps(fin))
 
-    def analysis(self, uid):
-        new = self.get_by_uid(uid)
+    async def analysis(self, uid):
+        new = await self.get_by_uid(uid)
         old = self.cache(uid)
         if old == False:  # 初始化订阅
             self.cache(uid, new)
@@ -69,11 +71,11 @@ class PixivRSS(RSS, Pixiv):
             self.cache(uid, new)
             return fin
 
-    def transform(self, data, msg="叮叮,侦测到订阅更新\n"):
+    async def transform(self, data, msg="叮叮,侦测到订阅更新\n"):
         msg = MesssagePart.plain(msg)
         if data["illusts"] != []:
             i = data["illusts"][0]
-            r = self.get_by_pid(i)
+            r = await self.get_by_pid(i)
             msg += MesssagePart.plain(
                 f'PID\t{i}\n{r["body"]["illustTitle"]}')
             msg += MesssagePart.image(r["body"]["urls"]
