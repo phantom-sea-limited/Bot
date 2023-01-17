@@ -12,7 +12,7 @@ from .AsyncRela import RelaComic
 from .AsyncPixiv import PixivRSS
 driver = get_driver()
 PHPSESSID = getattr(driver.config, "pixiv_phpsessid", "")
-print(PHPSESSID)
+
 
 @dataclass
 class Rss:

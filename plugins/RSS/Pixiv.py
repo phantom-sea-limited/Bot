@@ -70,12 +70,14 @@ class PixivRSS(RSS, Pixiv):
             return fin
 
     def transform(self, data, msg="叮叮,侦测到订阅更新\n"):
+        if data == {'illusts': [], 'manga': [], 'novels': []}:
+            return False
         msg = MesssagePart.plain(msg)
         if data["illusts"] != []:
             i = data["illusts"][0]
             r = self.get_by_pid(i)
             msg += MesssagePart.plain(
-                f'PID\t{i}\n{r["body"]["illustTitle"]}')
+                f'PID {i}\n{r["body"]["illustTitle"]}')
             msg += MesssagePart.image(r["body"]["urls"]
                                       ["original"].replace("i.pximg.net", self.Mirror))
             msg += MesssagePart.plain(

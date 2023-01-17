@@ -145,5 +145,3 @@ class Acgnx(RSS):
             return "什么都没搜到"
         else:
             return r
-
-

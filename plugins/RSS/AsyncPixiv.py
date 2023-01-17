@@ -1,4 +1,5 @@
 import json
+from nonebot.log import logger
 from Lib.AsyncNetwork import Network
 from Lib.ini import CONF
 from Lib.Message import MesssagePart
@@ -14,6 +15,10 @@ class PixivRSS(RSS, Pixiv):
     def __init__(self, n=Network({"www.pixiv.net": {"ip": "210.140.92.193"}}), c=CONF("rss"), PHPSESSID="") -> None:
         RSS.__init__(self, n, c)
         Pixiv.__init__(self, n, PHPSESSID)
+
+    async def none(self, **kwargs):
+        "垃圾桶函数"
+        raise RSSException("警告！pixiv登录状态失效，订阅系统已自动暂停，请修复后重启")
 
     @staticmethod
     def top(data):
@@ -42,6 +47,13 @@ class PixivRSS(RSS, Pixiv):
                 return json.loads(tmp)
         fin = self.top(data)
         return super().cache(str(uid), json.dumps(fin))
+
+    async def check_logined_state(self) -> bool:
+        if await super().check_logined_state() != True:
+            self.analysis = self.none
+            logger.error("Pixiv登录状态异常")
+        else:
+            logger.info("Pixiv登录状态正常")
 
     async def analysis(self, uid):
         new = await self.get_by_uid(uid)
@@ -72,12 +84,14 @@ class PixivRSS(RSS, Pixiv):
             return fin
 
     async def transform(self, data, msg="叮叮,侦测到订阅更新\n"):
+        if data == {'illusts': [], 'manga': [], 'novels': []}:
+            return False
         msg = MesssagePart.plain(msg)
         if data["illusts"] != []:
             i = data["illusts"][0]
             r = await self.get_by_pid(i)
             msg += MesssagePart.plain(
-                f'PID\t{i}\n{r["body"]["illustTitle"]}')
+                f'PID {i}\n{r["body"]["illustTitle"]}')
             msg += MesssagePart.image(r["body"]["urls"]
                                       ["original"].replace("i.pximg.net", self.Mirror))
             msg += MesssagePart.plain(
@@ -89,3 +103,12 @@ class PixivRSS(RSS, Pixiv):
             for i in data["novels"]:
                 msg += MesssagePart.plain(i)
         return msg
+
+    def Timer(self):
+        return [{
+            "function": self.check_logined_state,
+            "cron": {
+                "hour": "*",
+                "minute": "*/30"
+            }
+        }]
