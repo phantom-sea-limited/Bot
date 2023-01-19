@@ -3,7 +3,7 @@ import asyncio
 from nonebot import require
 from nonebot.log import logger
 from nonebot_plugin_apscheduler import scheduler
-from Lib.AsyncBot import BOT
+from Instance import BOTInstance as BOT
 from Lib.Message import Message
 from Lib.AsyncNetwork import Network
 

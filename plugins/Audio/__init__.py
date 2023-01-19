@@ -40,7 +40,7 @@ def handles():
             if fin["error"]:
                 await matcher.finish(fin["error"])
             else:
-                from Lib.AsyncBot import BOT
+                from Instance import BOTInstance as BOT
                 from Lib.Message import Message
                 m = Message(event.sender.group.id)
                 m.voice(base64=fin["BASE64"])

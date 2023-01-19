@@ -1,17 +1,15 @@
 from dataclasses import dataclass
-from nonebot import on_startswith, get_driver
+from nonebot import on_startswith
 from nonebot.matcher import Matcher
 from nonebot.log import logger
 from nonebot.adapters.mirai2.event import MessageEvent
 from nonebot.adapters.mirai2.message import MessageChain
 from nonebot_plugin_apscheduler import scheduler
-from Lib.AsyncBot import BOT
+from Instance import BOTInstance as BOT
 from Lib.Message import Message
 from .AsyncRss import *
 from .AsyncRela import RelaComic
 from .AsyncPixiv import PixivRSS
-driver = get_driver()
-PHPSESSID = getattr(driver.config, "pixiv_phpsessid", "")
 
 
 @dataclass
@@ -23,7 +21,7 @@ class Rss:
 SUB = (
     Rss("acgnx", Acgnx()),
     Rss("热辣漫画", RelaComic()),
-    Rss("pixiv", PixivRSS(PHPSESSID=PHPSESSID))
+    Rss("pixiv", PixivRSS())
 )
 
 
@@ -38,16 +36,15 @@ def handles():
         async def _subscribe(matcher: Matcher, event: MessageEvent):
             word = event.get_plaintext().replace(a.keyword + "订阅", "")
             id, type = get_id(event)
-            if word != "":
-                r = a.handle.subscribe(
-                    {"word": word, "target": id, "type": type})
-            else:
-                r = False
+            if word == "":
+                matcher.finish("虚空订阅?")
+            try:
+                await a.handle.analysis(word)
+            except RSSException as e:
+                await matcher.finish(e.args[0])
+            r = a.handle.subscribe(
+                {"word": word, "target": id, "type": type})
             if r:
-                try:
-                    await a.handle.analysis(word)
-                except RSSException as e:
-                    await matcher.finish(e.args[0])
                 await matcher.finish("订阅成功")
             else:
                 await matcher.finish("订阅失败,订阅已存在或其他原因")

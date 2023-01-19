@@ -3,7 +3,7 @@ from nonebot.log import logger
 from Lib.AsyncNetwork import Network
 from Lib.ini import CONF
 from Lib.Message import MesssagePart
-from Code.AsyncPixiv import Pixiv
+from Instance import PixivInstance as Pixiv
 from .AsyncRss import RSS, RSSException
 
 
@@ -12,9 +12,9 @@ class PixivRSS(RSS, Pixiv):
     hour = "*"
     minute = "*/10"
 
-    def __init__(self, n=Network({"www.pixiv.net": {"ip": "210.140.92.193"}}), c=CONF("rss"), PHPSESSID="") -> None:
+    def __init__(self, n=Network({"www.pixiv.net": {"ip": "210.140.92.193"}}), c=CONF("rss")) -> None:
         RSS.__init__(self, n, c)
-        Pixiv.__init__(self, n, PHPSESSID)
+        Pixiv.__init__(self, n)
 
     async def none(self, **kwargs):
         "垃圾桶函数"

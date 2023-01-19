@@ -8,8 +8,6 @@ from .AsyncNetwork import Network as requests
 # T = logging.StreamHandler()
 # LOG.addHandler(T)
 
-BASE = "http://1.117.87.219:20000/"
-
 
 def get_qs(qs: json, key: str):
     try:
@@ -22,6 +20,9 @@ def get_qs(qs: json, key: str):
 
 class BOT():
     '''https://docs.mirai.mamoe.net/mirai-api-http/api/API.html'''
+    BASE = "http://1.117.87.219:20000/"
+    MASTER = 1019241536
+    QQ = 179334874
 
     def __init__(self, s=requests({})) -> None:
         self.session = s
@@ -30,32 +31,34 @@ class BOT():
         data = {
             "verifyKey": verifyKey
         }
-        r = await self.session.post(BASE + "verify", json=data)
+        r = await self.session.post(self.BASE + "verify", json=data)
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return await r.json()
 
-    async def bind(self, sessionKey="SINGLE_SESSION", qq=179334874):
+    async def bind(self, sessionKey="SINGLE_SESSION", qq=0):
+        if qq == 0:
+            qq = self.QQ
         data = {
             "sessionKey": sessionKey,
             "qq": qq
         }
-        r = await self.session.post(BASE + "bind", json=data)
+        r = await self.session.post(self.BASE + "bind", json=data)
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return await r.json()
 
     async def info(self, sessionKey="SINGLE_SESSION"):
-        r = await self.session.get(BASE + f"sessionInfo?sessionKey={sessionKey}")
+        r = await self.session.get(self.BASE + f"sessionInfo?sessionKey={sessionKey}")
         return self.check_and_reload(await r.json())
 
     async def peekLatestMessage(self, count: int = 10):
         url = "peekLatestMessage?count={}".format(str(count))
-        r = await self.session.get(BASE + url)
+        r = await self.session.get(self.BASE + url)
         # LOG.info("GET:\t" + r.url + "\n\t" + r.text)
         return self.check_and_reload(await r.json())
 
     async def get_mess_by_id(self, messageId, target):
         url = f"messageFromId?messageId={messageId}&target={target}"
-        r = await self.session.get(BASE + url)
+        r = await self.session.get(self.BASE + url)
         # LOG.info("GET:\t" + r.url + "\n\t" + r.text)
         return self.check_and_reload(await r.json())
 
@@ -135,7 +138,7 @@ class BOT():
         '''
         type: sendGroupMessage(群消息)/sendFriendMessage(好友消息)/recall(撤回)/sendNudge(戳一戳)
         '''
-        r = await self.session.post(BASE+type, json=data)
+        r = await self.session.post(self.BASE+type, json=data)
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         self.check(await r.json())
         return await r.json()
@@ -143,15 +146,15 @@ class BOT():
     async def reset(self, sessionKey="SINGLE_SESSION"):
         data = {
             "sessionKey": sessionKey,
-            "qq": 179334874
+            "qq": self.QQ
         }
-        r = await self.session.post(BASE + "release", json=data)
+        r = await self.session.post(self.BASE + "release", json=data)
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return await r.json()
 
     def check(self, r):
         if r["code"] != 0:
-            msg = {'target': 1019241536, 'messageChain': [
+            msg = {'target': self.MASTER, 'messageChain': [
                 {'type': 'Plain', 'text': f'消息发送异常{str(r)}'}]}
             self.sendMessage(msg, "sendFriendMessage")
 

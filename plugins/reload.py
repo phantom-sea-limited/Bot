@@ -2,7 +2,7 @@ from nonebot import require
 from nonebot.log import logger
 from nonebot import on_keyword
 from nonebot_plugin_apscheduler import scheduler
-from Lib.AsyncBot import BOT
+from Instance import BOTInstance as BOT
 from .__reboot.rebot import Reloader
 
 require("nonebot_plugin_apscheduler")
