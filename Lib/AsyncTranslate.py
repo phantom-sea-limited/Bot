@@ -15,7 +15,7 @@ class Bing():
     async def __get_token(self, url):
         r = await self.s.get(url)
         r = re.findall(
-            r'''var params_RichTranslateHelper = \[([\s\S]+?)\]''', await r.text())[0].split(",")
+            r'''var params_AbusePreventionHelper = \[([\s\S]+?)\]''', await r.text())[0].split(",")
         return r[0], r[1].replace("\"", "")
 
     async def __translate(self, data):

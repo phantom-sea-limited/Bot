@@ -21,7 +21,7 @@ class Bing():
     def __get_token(self, url):
         r = self.s.get(url)
         r = re.findall(
-            r'''var params_RichTranslateHelper = \[([\s\S]+?)\]''', r.text)[0].split(",")
+            r'''var params_AbusePreventionHelper = \[([\s\S]+?)\]''', r.text)[0].split(",")
         return r[0], r[1].replace("\"", "")
 
     def __translate(self, data):
