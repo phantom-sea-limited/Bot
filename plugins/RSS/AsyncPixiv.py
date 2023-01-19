@@ -11,6 +11,7 @@ class PixivRSS(RSS, Pixiv):
     sec = "Pixiv"
     hour = "*"
     minute = "*/10"
+    err = False
 
     def __init__(self, n=Network({"www.pixiv.net": {"ip": "210.140.92.193"}}), c=CONF("rss")) -> None:
         RSS.__init__(self, n, c)
@@ -18,7 +19,10 @@ class PixivRSS(RSS, Pixiv):
 
     async def none(self, **kwargs):
         "垃圾桶函数"
-        raise RSSException("警告！pixiv登录状态失效，订阅系统已自动暂停，请修复后重启")
+        if self.err == False:
+            self.err = True
+            raise RSSException("警告！pixiv登录状态失效，订阅系统已自动暂停，请修复后重启")
+        return {'illusts': [], 'manga': [], 'novels': []}
 
     @staticmethod
     def top(data):
