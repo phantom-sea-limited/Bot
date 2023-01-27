@@ -44,7 +44,7 @@ class RelaComic(RSS):
                 self.cache(word, uuid)
                 return new
 
-    async def transform(self, data, msg="叮叮,侦测到订阅更新\n"):
+    async def transform(self, data, msg="叮叮,侦测到热辣漫画更新\n"):
         if data == False:
             return False
         msg += f'{data["results"]["comic"]["name"]}\t作者 {data["results"]["comic"]["author"][0]["name"]}\n'

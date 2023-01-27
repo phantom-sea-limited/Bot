@@ -8,7 +8,7 @@ class RSS():
     sec = "RSS"
     hour = "*/1"
     minute = "30"
-    wait = "5"
+    wait = 5
     "订阅更新间隔"
 
     def __init__(self, n=Network({}), c=CONF("rss")) -> None:
@@ -131,7 +131,7 @@ class Acgnx(RSS):
             new["items"] = []
             return new
 
-    async def transform(self, new: json, msg="叮叮,侦测到订阅更新\n"):
+    async def transform(self, new: json, msg="叮叮,侦测到ACGNX更新\n"):
         if new["items"] == []:
             return False
         msg = f"{msg}{new['feed']['title']}\n\n"

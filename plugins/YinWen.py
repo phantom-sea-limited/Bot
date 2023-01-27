@@ -2,14 +2,14 @@ import random
 import time
 from nonebot import on_type
 from nonebot.adapters.mirai2.event import GroupMessage
-from Lib.Bot import BOT
+from Instance import BOTInstance as BOT
 from Lib.ini import CONF
 from .__face import face
 # 淫纹刻印时间到
 
 
 yw = on_type(GroupMessage, priority=10)
-
+c = CONF("YinWen")
 
 @yw.handle()
 async def __yw(event: GroupMessage):
@@ -101,15 +101,14 @@ async def __yw(event: GroupMessage):
         ],
     }
     # print(event.dict())
-    if random.randint(0, 1000) <= 9:  # 激活判定
-        c = CONF("YinWen")
+    if random.randint(0, 1000) <= 5:  # 激活判定
         t = time.strftime("%Y-%m-%d", time.localtime())
         if c.load(str(event.sender.id), "day")[0] != t:
             c.add(str(event.sender.id), "day", t)
             c.save()
             if random.randint(0, 1000) <= 100:  # 邪神手滑了
                 b = BOT()
-                r = b.peekLatestMessage(10)
+                r = await b.peekLatestMessage(10)
                 try:
                     r = b.Filtering_Group(r, event.sender.group.id)
                     target = random.choice(r["data"])

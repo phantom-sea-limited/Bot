@@ -87,7 +87,7 @@ class PixivRSS(RSS, Pixiv):
             self.cache(uid, new)
             return fin
 
-    async def transform(self, data, msg="叮叮,侦测到订阅更新\n"):
+    async def transform(self, data, msg="叮叮,侦测到PIXIV更新\n"):
         if data == {'illusts': [], 'manga': [], 'novels': []}:
             return False
         msg = MesssagePart.plain(msg)

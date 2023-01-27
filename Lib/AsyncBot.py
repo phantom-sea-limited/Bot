@@ -1,12 +1,6 @@
 # -*- coding: UTF-8 -*-
-
-# import logging
 import json
 from .AsyncNetwork import Network as requests
-# LOG = logging.getLogger("BOT")
-# LOG.setLevel(logging.INFO)
-# T = logging.StreamHandler()
-# LOG.addHandler(T)
 
 
 def get_qs(qs: json, key: str):
@@ -32,7 +26,6 @@ class BOT():
             "verifyKey": verifyKey
         }
         r = await self.session.post(self.BASE + "verify", json=data)
-        # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return await r.json()
 
     async def bind(self, sessionKey="SINGLE_SESSION", qq=0):
@@ -43,24 +36,21 @@ class BOT():
             "qq": qq
         }
         r = await self.session.post(self.BASE + "bind", json=data)
-        # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return await r.json()
 
     async def info(self, sessionKey="SINGLE_SESSION"):
         r = await self.session.get(self.BASE + f"sessionInfo?sessionKey={sessionKey}")
-        return self.check_and_reload(await r.json())
+        return await self.check_and_reload(await r.json())
 
     async def peekLatestMessage(self, count: int = 10):
         url = "peekLatestMessage?count={}".format(str(count))
         r = await self.session.get(self.BASE + url)
-        # LOG.info("GET:\t" + r.url + "\n\t" + r.text)
-        return self.check_and_reload(await r.json())
+        return await self.check_and_reload(await r.json())
 
     async def get_mess_by_id(self, messageId, target):
         url = f"messageFromId?messageId={messageId}&target={target}"
         r = await self.session.get(self.BASE + url)
-        # LOG.info("GET:\t" + r.url + "\n\t" + r.text)
-        return self.check_and_reload(await r.json())
+        return await self.check_and_reload(await r.json())
 
     @staticmethod
     def Filtering_message(message: json, key: str):
@@ -152,17 +142,17 @@ class BOT():
         # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return await r.json()
 
-    def check(self, r):
+    async def check(self, r):
         if r["code"] != 0:
             msg = {'target': self.MASTER, 'messageChain': [
                 {'type': 'Plain', 'text': f'消息发送异常{str(r)}'}]}
-            self.sendMessage(msg, "sendFriendMessage")
+            await self.sendMessage(msg, "sendFriendMessage")
 
     async def check_and_reload(self, r: dict):
         if r["code"] == 500:
             # self.reset()
             # self.bind(self.verify()["session"]) # SINGLE_SESSION MODE NOT NEED bind() SINGLE_SESSION模式无需bind()
-            self.verify()
+            await self.verify()
             return {"code": r["code"], "msg": r["msg"], "data": []}
         return r
 

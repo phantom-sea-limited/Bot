@@ -8,7 +8,7 @@ class RSS():
     sec = "RSS"
     hour = "*/1"
     minute = "30"
-    wait = "5"
+    wait = 5
     "订阅更新间隔"
 
     def __init__(self, n=Network({}), c=CONF("rss")) -> None:
