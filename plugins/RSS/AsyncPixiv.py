@@ -101,11 +101,11 @@ class PixivRSS(RSS, Pixiv):
             msg += MesssagePart.plain(
                 f'\n\n更多更新请查看https://www.pixiv.net/users/{r["body"]["userId"]}')
         if data["manga"] != []:
-            for i in data["manga"]:
-                pass
+            i = data["manga"][0]
+            msg += MesssagePart.plain(f"但是更新的是漫画，这部分功能尚未完成，漫画ID为{i}")
         if data["novels"] != []:
-            for i in data["novels"]:
-                msg += MesssagePart.plain(i)
+            i = data["novels"][0]
+            msg += MesssagePart.plain(f"但是更新的是小说，这部分功能尚未完成，小说ID为{i}")
         return msg
 
     def Timer(self):

@@ -13,6 +13,7 @@ class RelaComic(RSS):
     sec = "RelaComic"
 
     def __init__(self, n=Network({}), c=CONF("rss")) -> None:
+        "热辣漫画订阅"
         super().__init__(n, c)
         self.s.changeHeader(self.header)
 

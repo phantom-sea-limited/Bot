@@ -93,6 +93,7 @@ class Acgnx(RSS):
     sec = "Acgnx"
 
     def __init__(self, n=Network({}), c=CONF("rss")) -> None:
+        "末日動漫資源庫 - Project AcgnX Torrent Asia \nhttps://share.acgnx.net/"
         super().__init__(n, c)
 
     async def rss(self, word):
