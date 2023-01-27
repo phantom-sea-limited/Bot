@@ -6,7 +6,7 @@ from nonebot.log import logger
 from nonebot.adapters.mirai2.event import MessageEvent
 from nonebot.adapters.mirai2.message import MessageChain
 from nonebot_plugin_apscheduler import scheduler
-from Instance import BOTInstance as BOT
+from Instance import BOTInstanceInstance as BOT
 from Lib.Message import Message
 from .AsyncRss import *
 from .AsyncRela import RelaComic
@@ -93,7 +93,7 @@ def handles():
                     if msg != False:
                         m = Message(i["target"])
                         m.input(msg)
-                        r = await BOT(a.handle.s).sendMessage(m.get_message(), i["type"])
+                        r = await BOT.sendMessage(m.get_message(), i["type"])
                         logger.info(str(r))
 
         async def _search(matcher: Matcher, event: MessageEvent):

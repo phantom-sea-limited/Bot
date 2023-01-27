@@ -1,5 +1,6 @@
 from nonebot import get_driver
 from Lib.AsyncBot import BOT
+from Lib.AsyncNetwork import Network
 from Code.AsyncPixiv import Pixiv
 
 driver = get_driver()
@@ -18,3 +19,7 @@ class BOTInstance(BOT):
     BASE = BotUrl
     MASTER = Master
     QQ = qq
+
+
+NetworkInstance = Network({})
+BOTInstanceInstance = BOTInstance(NetworkInstance)

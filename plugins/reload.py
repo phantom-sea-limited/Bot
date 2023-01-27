@@ -2,7 +2,7 @@ from nonebot import require
 from nonebot.log import logger
 from nonebot import on_keyword
 from nonebot_plugin_apscheduler import scheduler
-from Instance import BOTInstance as BOT
+from Instance import BOTInstanceInstance as BOT
 from .__reboot.rebot import Reloader
 
 require("nonebot_plugin_apscheduler")
@@ -24,4 +24,4 @@ async def _reload():
 @scheduler.scheduled_job("cron", hour="*/4", id="reload_http")
 async def _reload_http():
     logger.info("Reloading http!")
-    await BOT().verify()
+    await BOT.verify()

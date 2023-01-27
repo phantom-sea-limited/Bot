@@ -3,7 +3,7 @@ import asyncio
 from nonebot import require
 from nonebot.log import logger
 from nonebot_plugin_apscheduler import scheduler
-from Instance import BOTInstance as BOT
+from Instance import BOTInstanceInstance as BOT
 from Lib.Message import Message
 from Lib.AsyncNetwork import Network
 
@@ -23,5 +23,5 @@ async def run_every_1_hour(arg1, arg2):
         m.plain(f'''PID {r["body"]["id"]}\n''')
         m.image(r["body"]["urls"]["original"].replace(
             "i.pixiv.re", "piv.deception.world"))
-        r = await BOT(n).sendMessage(m.get_message(), "sendGroupMessage")
+        r = await BOT.sendMessage(m.get_message(), "sendGroupMessage")
         logger.info(str(r))

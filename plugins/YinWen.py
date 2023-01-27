@@ -2,7 +2,7 @@ import random
 import time
 from nonebot import on_type
 from nonebot.adapters.mirai2.event import GroupMessage
-from Instance import BOTInstance as BOT
+from Instance import BOTInstanceInstance as b
 from Lib.ini import CONF
 from .__face import face
 # 淫纹刻印时间到
@@ -107,7 +107,6 @@ async def __yw(event: GroupMessage):
             c.add(str(event.sender.id), "day", t)
             c.save()
             if random.randint(0, 1000) <= 100:  # 邪神手滑了
-                b = BOT()
                 r = await b.peekLatestMessage(10)
                 try:
                     r = b.Filtering_Group(r, event.sender.group.id)

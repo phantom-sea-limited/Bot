@@ -4,12 +4,10 @@ from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.params import Depends
 from nonebot.adapters.mirai2.event import GroupMessage
-from Lib.AsyncNetwork import Network
+from Instance import NetworkInstance as s
 from Lib.AsyncTranslate import Bing
 from plugins.__Limit import Limit
 from .amadeus import *
-
-s = Network({})
 
 
 @dataclass
@@ -40,11 +38,11 @@ def handles():
             if fin["error"]:
                 await matcher.finish(fin["error"])
             else:
-                from Instance import BOTInstance as BOT
+                from Instance import BOTInstanceInstance as BOT
                 from Lib.Message import Message
                 m = Message(event.sender.group.id)
                 m.voice(base64=fin["BASE64"])
-                r = await BOT(s=s).sendMessage(m.get_message(), "sendGroupMessage")
+                r = await BOT.sendMessage(m.get_message(), "sendGroupMessage")
                 logger.info(r)
         return _de
 
