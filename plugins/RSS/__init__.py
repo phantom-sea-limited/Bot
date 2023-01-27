@@ -1,3 +1,4 @@
+import asyncio
 from dataclasses import dataclass
 from nonebot import on_startswith
 from nonebot.matcher import Matcher
@@ -82,6 +83,7 @@ def handles():
                 pass
             else:
                 for i in r:
+                    await asyncio.sleep(a.handle.wait)
                     try:
                         msg = await a.handle.analysis(i["word"])
                         msg = await a.handle.transform(msg)

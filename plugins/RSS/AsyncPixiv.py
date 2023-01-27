@@ -10,7 +10,7 @@ from .AsyncRss import RSS, RSSException
 class PixivRSS(RSS, Pixiv):
     sec = "Pixiv"
     hour = "*"
-    minute = "*/10"
+    minute = "*/20"
     err = False
 
     def __init__(self, n=Network({"www.pixiv.net": {"ip": "210.140.92.193"}}), c=CONF("rss")) -> None:
@@ -113,6 +113,6 @@ class PixivRSS(RSS, Pixiv):
             "function": self.check_logined_state,
             "cron": {
                 "hour": "*",
-                "minute": "*/30"
+                "minute": "30"
             }
         }]
