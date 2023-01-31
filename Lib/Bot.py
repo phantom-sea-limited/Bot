@@ -31,7 +31,6 @@ class BOT():
             "verifyKey": verifyKey
         }
         r = self.session.post(BASE + "verify", json=data)
-        # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return r.json()
 
     def bind(self, sessionKey="SINGLE_SESSION", qq=179334874):
@@ -40,7 +39,6 @@ class BOT():
             "qq": qq
         }
         r = self.session.post(BASE + "bind", json=data)
-        # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return r.json()
 
     def info(self, sessionKey="SINGLE_SESSION"):
@@ -50,13 +48,11 @@ class BOT():
     def peekLatestMessage(self, count: int = 10):
         url = "peekLatestMessage?count={}".format(str(count))
         r = self.session.get(BASE + url)
-        # LOG.info("GET:\t" + r.url + "\n\t" + r.text)
         return self.check_and_reload(r.json())
 
     def get_mess_by_id(self, messageId, target):
         url = f"messageFromId?messageId={messageId}&target={target}"
         r = self.session.get(BASE + url)
-        # LOG.info("GET:\t" + r.url + "\n\t" + r.text)
         return self.check_and_reload(r.json())
 
     @staticmethod
@@ -135,10 +131,43 @@ class BOT():
         '''
         type: sendGroupMessage(群消息)/sendFriendMessage(好友消息)/recall(撤回)/sendNudge(戳一戳)
         '''
-        r = self.session.post(BASE+type, json=data)
-        # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
-        self.check(r.json())
-        return r.json()
+        r = self.session.post(BASE+type, json=data).json()
+        self.check(r)
+        return r
+
+    def mute(self, groupid, userid, time):
+        data = {
+            "target": groupid,
+            "memberId": userid,
+            "time": time
+        }
+        r = self.session.post(BASE + "mute", json=data).json()
+        return r
+
+    def unmute(self, groupid, userid):
+        data = {
+            "target": groupid,
+            "memberId": userid,
+        }
+        r = self.session.post(BASE + "unmute", json=data).json()
+        return r
+
+    def memberInfo(self, groupid, userid):
+        url = f"memberInfo?target={groupid}&memberId={userid}"
+        r = self.session.get(BASE + url).json()
+        return r
+
+    def change_memberInfo(self, groupid, userid, name, specialTitle):
+        data = {
+            "target": groupid,
+            "memberId": userid,
+            "info": {
+                "name": name,
+                "specialTitle": specialTitle
+            }
+        }
+        r = self.session.post(BASE + "memberInfo", json=data).json()
+        return r
 
     def reset(self, sessionKey="SINGLE_SESSION"):
         data = {
@@ -146,7 +175,6 @@ class BOT():
             "qq": 179334874
         }
         r = self.session.post(BASE + "release", json=data)
-        # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return r.json()
 
     def check(self, r):

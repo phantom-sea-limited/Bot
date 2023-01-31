@@ -129,8 +129,44 @@ class BOT():
         type: sendGroupMessage(群消息)/sendFriendMessage(好友消息)/recall(撤回)/sendNudge(戳一戳)
         '''
         r = await self.session.post(self.BASE+type, json=data)
-        # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
-        self.check(await r.json())
+        r = await r.json()
+        self.check(r)
+        return r
+
+    async def mute(self, groupid, userid, time):
+        data = {
+            "target": groupid,
+            "memberId": userid,
+            "time": time
+        }
+        r = await self.session.post(self.BASE + "mute", json=data)
+        r = await r.json()
+        return r
+
+    async def unmute(self, groupid, userid):
+        data = {
+            "target": groupid,
+            "memberId": userid,
+        }
+        r = await self.session.post(self.BASE + "unmute", json=data)
+        r = await r.json()
+        return r
+
+    async def memberInfo(self, groupid, userid):
+        url = f"memberInfo?target={groupid}&memberId={userid}"
+        r = await self.session.get(self.BASE + url)
+        return await r.json()
+
+    async def change_memberInfo(self, groupid, userid, name, specialTitle):
+        data = {
+            "target": groupid,
+            "memberId": userid,
+            "info": {
+                "name": name,
+                "specialTitle": specialTitle
+            }
+        }
+        r = await self.session.post(self.BASE + "memberInfo", json=data)
         return await r.json()
 
     async def reset(self, sessionKey="SINGLE_SESSION"):
@@ -139,7 +175,6 @@ class BOT():
             "qq": self.QQ
         }
         r = await self.session.post(self.BASE + "release", json=data)
-        # LOG.info("POST:\t" + r.url + "\nDATA:\t" + str(data) + "\n\t" + r.text)
         return await r.json()
 
     async def check(self, r):
