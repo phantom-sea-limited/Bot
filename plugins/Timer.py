@@ -5,7 +5,7 @@ from nonebot.log import logger
 from nonebot_plugin_apscheduler import scheduler
 from Instance import BOTInstanceInstance as BOT
 from Lib.Message import Message
-from Lib.AsyncNetwork import Network
+from Instance import NetworkInstance as n
 
 
 require("nonebot_plugin_apscheduler")
@@ -16,7 +16,6 @@ async def run_every_1_hour(arg1, arg2):
     await asyncio.sleep(5)
     t = time.strftime("%H", time.localtime())
     if int(t) > 7:
-        n = Network({})
         r = await n.get(f"https://api.sirin.top/release/PIXIV/ranking?mode=daily&top={int(t)-7}")
         r = await r.json(content_type="text/json")
         m = Message(960290056)

@@ -5,6 +5,7 @@ from nonebot import on_keyword
 from nonebot.params import Depends
 from nonebot.adapters.mirai2.event import Event
 from Lib.AsyncNetwork import Network
+from Instance import NetworkInstance as s
 from .__Limit import Limit
 
 
@@ -29,7 +30,7 @@ weather = on_keyword(["天气", "tianqi"], priority=2,
 async def _(event: Event, d=Depends(Limit(120).set)):
     word = event.get_plaintext()
     try:
-        r = await Weather(word)
+        r = await Weather(word, s)
         msg = r["locate"] + "\t" + r["L1"][0]["Title"] + "\n最高温" + \
             r["L1"][0]["High"] + "C°,最低温" + r["L1"][0]["Low"] + \
             "C°" + "\n风速" + r["L1"][0]["Wind"] + \

@@ -1,13 +1,13 @@
 from nonebot import require
 from nonebot.log import logger
 from nonebot import on_keyword
-from nonebot.adapters.mirai2.permission import GROUP_ADMINS
+from nonebot.permission import SUPERUSER
 from nonebot_plugin_apscheduler import scheduler
 from Instance import BOTInstanceInstance as BOT
 from .__reboot.rebot import Reloader
 
 require("nonebot_plugin_apscheduler")
-reload = on_keyword(["Reload"], priority=1, block=True, permission=GROUP_ADMINS)
+reload = on_keyword(["Reload"], priority=1, block=True, permission=SUPERUSER)
 
 
 @reload.handle()

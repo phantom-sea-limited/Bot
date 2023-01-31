@@ -6,7 +6,7 @@ c = CONF("limit")
 
 
 class Limit():
-    def __init__(self, limit_time=60, channel="defalut") -> None:
+    def __init__(self, limit_time=60, channel="default") -> None:
         self.t = limit_time
         self.channel = channel
 
