@@ -4,7 +4,7 @@ import configparser
 from .log import Log
 import traceback
 
-l = Log("Conf",log_level=30)
+l = Log("Conf", log_level=50)
 
 
 class CONF():
@@ -12,8 +12,8 @@ class CONF():
         self.LOG = ""
         if not os.path.exists(conf_path):
             os.makedirs(conf_path)
-        self.CONF = configparser.RawConfigParser()  #不检测存在%的内容，否则抛出异常
-        # self.CONF = configparser.ConfigParser() 
+        self.CONF = configparser.RawConfigParser()  # 不检测存在%的内容，否则抛出异常
+        # self.CONF = configparser.ConfigParser()
         self.F = os.path.join(f"{conf_path}", f"{name}.ini")
         try:
             self.CONF.read(self.F, encoding="utf-8")
