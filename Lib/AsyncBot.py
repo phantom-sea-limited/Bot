@@ -16,6 +16,7 @@ class BOT():
     '''https://docs.mirai.mamoe.net/mirai-api-http/api/API.html'''
     BASE = "http://1.117.87.219:20000/"
     MASTER = 1019241536
+    "仅仅用于推送消息异常警告"
     QQ = 179334874
 
     def __init__(self, s=requests({})) -> None:
@@ -130,7 +131,7 @@ class BOT():
         '''
         r = await self.session.post(self.BASE+type, json=data)
         r = await r.json()
-        self.check(r)
+        await self.check(r)
         return r
 
     async def mute(self, groupid, userid, time):
