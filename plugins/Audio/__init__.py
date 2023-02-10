@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Union
 from nonebot import get_driver, on_startswith
 from nonebot.log import logger
 from nonebot.matcher import Matcher
@@ -9,18 +10,20 @@ from Instance import FFMPEG
 from Lib.AsyncTranslate import Bing
 from plugins.__Limit import Limit
 from .amadeus import *
+from .amadeusWss import *
 
 
 @dataclass
 class Audio:
     keywords: list
-    handle: huggingface
+    handle: Union[huggingface, huggingfaceWss]
     translate: bool = True
 
 
 voice = (
-    Audio(["Amadeus", "红莉栖", "助手"], Amadeus(s, FFMPEG)),
-    Audio(["saber", "阿尔托莉雅", "王"], Artoria(s, FFMPEG)),
+    Audio(["Amadeus", "红莉栖", "助手"], AmadeusWss(FFMPEG=FFMPEG)),
+    Audio(["saber", "阿尔托莉雅", "王"], Artoria(s=s, FFMPEG=FFMPEG)),
+    Audio(["空崎 ヒナ", "空崎日奈"], Sorasaki_Hina(FFMPEG=FFMPEG)),
 )
 
 
