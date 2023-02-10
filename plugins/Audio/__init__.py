@@ -5,6 +5,7 @@ from nonebot.matcher import Matcher
 from nonebot.params import Depends
 from nonebot.adapters.mirai2.event import GroupMessage
 from Instance import NetworkInstance as s
+from Instance import FFMPEG
 from Lib.AsyncTranslate import Bing
 from plugins.__Limit import Limit
 from .amadeus import *
@@ -14,11 +15,12 @@ from .amadeus import *
 class Audio:
     keywords: list
     handle: huggingface
+    translate: bool = True
 
 
 voice = (
-    Audio(["Amadeus", "红莉栖", "助手"], Amadeus(s=s)),
-    Audio(["saber", "阿尔托莉雅", "王"], Artoria(s=s)),
+    Audio(["Amadeus", "红莉栖", "助手"], Amadeus(s, FFMPEG)),
+    Audio(["saber", "阿尔托莉雅", "王"], Artoria(s, FFMPEG)),
 )
 
 
@@ -28,7 +30,11 @@ def handles():
             text = event.get_plaintext()
             for i in a.keywords:
                 text = text.replace(i, "")
-            text = await Bing(s).run(text, "ja")
+            if a.translate:
+                try:
+                    text = await Bing(s).run(text, "ja")
+                except Exception:
+                    matcher.finish("Translate ERROR:\n翻译API失效")
             # text = Bing(text, "ja").text
             A = a.handle
             driver = get_driver()

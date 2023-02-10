@@ -11,14 +11,17 @@ class LOG():
 
 class huggingface():
     API = "https://api-inference.huggingface.co/models/"
-    FFMPEG = os.path.join(".log", "ffmpeg.exe")
     log = LOG()
 
-    def __init__(self, temp_path=os.path.join(".log", "audio"), s=Network({})) -> None:
+    def __init__(self, FFMPEG=False, temp_path=os.path.join(".log", "audio"), s=Network({})) -> None:
         if os.path.exists(temp_path) != True:
             os.mkdir(temp_path)
         self.path = temp_path
         self.s = s
+        if FFMPEG == False:
+            self.FFMPEG = os.path.join(".log", "ffmpeg.exe")
+        else:
+            self.FFMPEG = FFMPEG
 
     async def input(self, word):
         data = {"inputs": word}

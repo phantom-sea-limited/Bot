@@ -4,6 +4,8 @@ from Lib.AsyncNetwork import Network
 from Code.AsyncPixiv import Pixiv
 
 driver = get_driver()
+#Audio
+FFMPEG = getattr(driver.config, "ffmpeg", False)
 # PIXIV
 PHPSESSID = getattr(driver.config, "pixiv_phpsessid", "")
 MIRROR = getattr(driver.config, "mirror", "piv.deception.world")
