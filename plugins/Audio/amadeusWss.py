@@ -3,8 +3,9 @@ import json
 import random
 import base64
 import subprocess
-from nonebot.log import logger as LOG
 from websockets.legacy.client import Connect
+from nonebot.log import logger as LOG
+from utils import run_blocking_func
 from Lib.log import Log
 l = Log("wss")
 
@@ -40,7 +41,7 @@ class huggingfaceWss():
                            "session_hash": self.session_hash})
 
     async def input(self, word):
-        ws = await Connect(self.API, logger=l.LOG, extra_headers={})
+        ws = await Connect(self.API, logger=l, extra_headers={})
         l.info(f"[Start][INFO]\t{self.API}")
         while ws.open:
             r = await ws.recv()
@@ -70,7 +71,7 @@ class huggingfaceWss():
         return {"error": False, "PATH": PATH}
 
     def transform(self, PATH):
-        OUT = f"{PATH[:-4]}amr"
+        OUT = f"{os.path.splitext(PATH)[0]}.amr"  # 我为什么当初要这么写呢？不知道
         cmd = f"{self.FFMPEG} -i {PATH} -ab 320k -ac 1 -ar 8000 {OUT} -y"
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         for line in iter(p.stdout.readline, b''):
@@ -89,12 +90,14 @@ class huggingfaceWss():
             r = await self.input(word)
             if r["error"]:
                 return {"error": "API ERROR:\n" + r["error"]}
-            r = self.transform(r["PATH"])
+            r = await run_blocking_func(self.transform, r["PATH"])
+            # r = self.transform(r["PATH"])
             if r["error"]:
                 return {"error": "SERVER ERROR:\n" + r["error"]}
             return {"error": False, "BASE64": self.base64(r["PATH"])}
-        except OSError as e:
-            return {"error": f"OSError\n{str(e.args())}"}
+        except Exception as e:
+            errname = str(type(e)).split("'")[1]
+            return {"error": f"{errname}\n{str(e.args())}"}
 
 
 class AmadeusWss(huggingfaceWss):

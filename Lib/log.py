@@ -26,6 +26,7 @@ class Log():
             self.LOG.addHandler(self.F)
 
     def enable(self):
+        "启用控制台打印"
         T = logging.StreamHandler()
         self.LOG.removeHandler(T)
         self.LOG.addHandler(T)

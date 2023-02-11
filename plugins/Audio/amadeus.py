@@ -3,6 +3,7 @@ import subprocess
 import base64
 from nonebot.log import logger as LOG
 from Lib.AsyncNetwork import Network
+from utils import run_blocking_func
 
 
 class huggingface():
@@ -30,7 +31,7 @@ class huggingface():
             return {"error": False, "PATH": Path}
 
     def transform(self, PATH):
-        OUT = f"{PATH[:-4]}amr"
+        OUT = f"{os.path.splitext(PATH)[0]}.amr"  # 我为什么当初要这么写呢？不知道
         cmd = f"{self.FFMPEG} -i {PATH} -ab 320k -ac 1 -ar 8000 {OUT} -y"
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         for line in iter(p.stdout.readline, b''):
@@ -45,13 +46,18 @@ class huggingface():
         return str(base64.b64encode(b), encoding="utf-8")
 
     async def run(self, word):
-        r = await self.input(word)
-        if r["error"]:
-            return {"error": "API ERROR:\n" + r["error"]}
-        r = self.transform(r["PATH"])
-        if r["error"]:
-            return {"error": "SERVER ERROR:\n" + r["error"]}
-        return {"error": False, "BASE64": self.base64(r["PATH"])}
+        try:
+            r = await self.input(word)
+            if r["error"]:
+                return {"error": "API ERROR:\n" + r["error"]}
+            r = await run_blocking_func(self.transform, r["PATH"])
+            # r = self.transform(r["PATH"])
+            if r["error"]:
+                return {"error": "SERVER ERROR:\n" + r["error"]}
+            return {"error": False, "BASE64": self.base64(r["PATH"])}
+        except Exception as e:
+            errname = str(type(e)).split("'")[1]
+            return {"error": f"{errname}\n{str(e.args())}"}
 
 
 class Amadeus(huggingface):
