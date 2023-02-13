@@ -125,4 +125,17 @@ class BA_base(huggingfaceWss):
 
 
 class Sorasaki_Hina(BA_base):
+    "空崎日奈"
     fn_index = 51
+
+
+class BA_Chinese_base(BA_base):
+
+    def get_post(self, word):
+        return json.dumps({"fn_index": self.fn_index, "data": [word, "中文",
+                          0.6, 0.668, 1], "session_hash": self.session_hash})
+
+
+class KeQing(BA_Chinese_base):
+    "刻晴"
+    fn_index = 87

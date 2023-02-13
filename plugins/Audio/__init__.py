@@ -24,6 +24,7 @@ voice = (
     Audio(["Amadeus", "红莉栖", "助手"], AmadeusWss(FFMPEG=FFMPEG)),
     Audio(["saber", "阿尔托莉雅", "王"], Artoria(s=s, FFMPEG=FFMPEG)),
     Audio(["空崎 ヒナ", "空崎日奈"], Sorasaki_Hina(FFMPEG=FFMPEG)),
+    Audio(["刻晴", "刻师傅"], KeQing(FFMPEG=FFMPEG), False),
 )
 
 

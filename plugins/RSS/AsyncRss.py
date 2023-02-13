@@ -143,7 +143,7 @@ class Acgnx(RSS):
         if word == "":
             return "不能搜索虚空.jpg"
         r = await self.rss(word)
-        r = self.transform(await r.json(), "")
+        r = await self.transform(await r.json(), "")
         if r == False:
             return "什么都没搜到"
         else:
