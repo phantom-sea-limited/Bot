@@ -5,9 +5,9 @@ import base64
 import subprocess
 from websockets.legacy.client import Connect
 from nonebot.log import logger as LOG
-from utils import run_blocking_func
+from utils.Async import run_blocking_func
 from Lib.log import Log
-l = Log("wss")
+l = Log("WSClient")
 
 
 def generate_random_str(randomlength=16):

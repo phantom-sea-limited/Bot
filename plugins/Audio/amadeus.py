@@ -3,7 +3,7 @@ import subprocess
 import base64
 from nonebot.log import logger as LOG
 from Lib.AsyncNetwork import Network
-from utils import run_blocking_func
+from utils.Async import run_blocking_func
 
 
 class huggingface():
