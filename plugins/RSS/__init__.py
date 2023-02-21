@@ -7,7 +7,9 @@ from nonebot.adapters.mirai2.event import MessageEvent
 from nonebot.adapters.mirai2.message import MessageChain
 from nonebot_plugin_apscheduler import scheduler
 from Instance import BOTInstanceInstance as BOT
+from Instance import NetworkInstance
 from Lib.Message import Message
+from Lib.ini import CONF
 from .AsyncRss import *
 from .AsyncRela import RelaComic
 from .AsyncPixiv import PixivRSS
@@ -17,13 +19,25 @@ from .AsyncPixiv import PixivRSS
 class Rss:
     keyword: str
     handle: RSS
+    updating: bool = False
 
+
+c = CONF("rss")
 
 SUB = (
-    Rss("acgnx", Acgnx()),
-    Rss("热辣漫画", RelaComic()),
-    Rss("pixiv", PixivRSS())
+    Rss("acgnx", Acgnx(NetworkInstance, c=c)),
+    Rss("热辣漫画", RelaComic(NetworkInstance, c=c)),
+    Rss("pixiv", PixivRSS(c=c))
 )
+
+
+def save():
+    for i in SUB:
+        if i.updating:
+            logger.info("RSS未保存")
+            return None
+    c.save()
+    logger.info("RSS已保存")
 
 
 def handles():
@@ -85,9 +99,13 @@ def handles():
                 for i in r:
                     await asyncio.sleep(a.handle.wait)
                     try:
+                        a.updating = True
                         msg = await a.handle.analysis(i["word"])
                         msg = await a.handle.transform(msg)
+                        a.updating = False
+                        save()
                     except RSSException as e:
+                        a.updating = False
                         msg = e.args[0]
                     logger.info(i["word"] + "\t" + str(msg))
                     if msg != False:

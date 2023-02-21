@@ -26,7 +26,7 @@ class RSS():
         else:
             # self.c.add(self.sec, quote(url), base64.b64encode(data.encode('utf8')).decode())
             self.c.add(self.sec, quote(url), data)
-            self.c.save()
+            # self.c.save()
 
     def subscribe(self, data):
         all = self.c.load(self.sec, "subscribe")[0]
