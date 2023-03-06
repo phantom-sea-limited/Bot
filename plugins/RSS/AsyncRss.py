@@ -80,6 +80,11 @@ class RSS():
         }]'''
         return []
 
+    def start(self):
+        '''预加载的功能,返回值为空列表或\n        
+        [callable1,callable2]'''
+        return []
+
     async def search(self, word):
         "实现搜索功能,正常应该返回MessageChain或其可兼容值"
 

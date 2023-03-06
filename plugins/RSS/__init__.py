@@ -1,6 +1,6 @@
 import asyncio
 from dataclasses import dataclass
-from nonebot import on_startswith
+from nonebot import on_startswith, get_driver
 from nonebot.matcher import Matcher
 from nonebot.log import logger
 from nonebot.adapters.mirai2.event import MessageEvent
@@ -13,6 +13,9 @@ from Lib.ini import CONF
 from .AsyncRss import *
 from .AsyncRela import RelaComic
 from .AsyncPixiv import PixivRSS
+from .AsyncQidian import Qidian
+
+Driver = get_driver()
 
 
 @dataclass
@@ -27,20 +30,21 @@ c = CONF("rss")
 SUB = (
     Rss("acgnx", Acgnx(NetworkInstance, c=c)),
     Rss("热辣漫画", RelaComic(NetworkInstance, c=c)),
-    Rss("pixiv", PixivRSS(c=c))
+    Rss("pixiv", PixivRSS(c=c)),
+    Rss("起点", Qidian(NetworkInstance, c=c))
 )
 
 
-def save():
-    for i in SUB:
-        if i.updating:
-            logger.info("RSS未保存")
-            return None
-    c.save()
-    logger.info("RSS已保存")
-
-
 def handles():
+
+    def save():
+        for i in SUB:
+            if i.updating:
+                logger.info("RSS未保存")
+                return None
+        c.save()
+        logger.info("RSS已保存")
+
     def run(a: Rss):
         def get_id(event: MessageEvent):
             try:
@@ -153,6 +157,12 @@ def handles():
             for j in timer:
                 scheduler.add_job(j["function"], trigger="cron",
                                   hour=j["cron"]["hour"], minute=j["cron"]["minute"])
+        start = i.handle.start()
+        if start == []:
+            pass
+        else:
+            for j in start:
+                Driver.on_bot_connect(j)
 
 
 handles()
