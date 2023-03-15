@@ -60,6 +60,10 @@ class Pixiv():
         url = f"https://www.pixiv.net/ajax/user/{uid}/profile/top?lang=zh"
         return self.get(url)
 
+    def get_all_by_uid(self, uid):
+        url = f"https://www.pixiv.net/ajax/user/{uid}/profile/all?lang=zh"
+        return self.get(url)
+
     def get_by_Nid(self, NoverID):
         url = f"https://www.pixiv.net/ajax/novel/{NoverID}?lang=zh"
         return self.get(url)
