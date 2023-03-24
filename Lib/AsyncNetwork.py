@@ -157,7 +157,7 @@ class Header():
             if noDefaultHeader:
                 h = header
             else:
-                h = Header.addheader(dfheader, header)
+                h = Header.addheader(N.dfheader, header)
         else:
             h = N.dfheader.copy()
         if changeDefaultHeader:
