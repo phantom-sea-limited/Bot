@@ -14,6 +14,7 @@ from .AsyncRss import *
 from .AsyncRela import RelaComic
 from .AsyncPixiv import PixivRSS
 from .AsyncQidian import Qidian
+from .AsyncBilibili import BiliRss
 
 Driver = get_driver()
 
@@ -31,7 +32,8 @@ SUB = (
     Rss("acgnx", Acgnx(NetworkInstance, c=c)),
     Rss("热辣漫画", RelaComic(NetworkInstance, c=c)),
     Rss("pixiv", PixivRSS(c=c)),
-    Rss("起点", Qidian(NetworkInstance, c=c))
+    Rss("起点", Qidian(NetworkInstance, c=c)),
+    Rss("b站", BiliRss(c=c))
 )
 
 
