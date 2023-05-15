@@ -56,3 +56,5 @@ class Bilibili():
             return tmp['data']['live_room']['liveStatus'] == 1
         except TypeError:
             return False  # 账户不存在直播间
+        except KeyError:
+            return False

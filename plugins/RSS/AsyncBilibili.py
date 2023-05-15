@@ -1,4 +1,5 @@
 import json
+from nonebot.log import logger
 from Code.AsyncBilibili import Bilibili
 from Lib.Message import MesssagePart
 from Lib.AsyncNetwork import Network
@@ -25,6 +26,10 @@ class BiliRss(Bilibili, RSS):
             TYPE = "Video"
         elif pub_action == "投稿了文章":
             TYPE = "Article"
+            logger.error(f"BiliRSS TYPE NOT FOUND:\n\t{str(single)}")
+        else:
+
+            return False
         msg = MesssagePart.plain(
             single['modules']['module_author']['name'] + pub_action + "\n")
         if single['modules']['module_dynamic']['desc'] != None:
@@ -88,6 +93,9 @@ class BiliRss(Bilibili, RSS):
             self.cache(UID, new)
             if new["LS"] == True and old["LS"] == False:
                 new["LS"] = True
+            elif new["LS"] == False and old["LS"] == True:
+                new['LS'] = False
+                new['body'] = False  # 直播前后动态的最新DId会变动
             else:
                 new["LS"] = False
             if new["Did"] == old["Did"]:
