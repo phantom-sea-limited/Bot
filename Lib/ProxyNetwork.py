@@ -1,13 +1,11 @@
+import requests
 from .log import Log
-import aiohttp
-import traceback
 import ssl
-ssl_ctx = ssl.SSLContext()
-ssl_ctx.check_hostname = False
-ssl_ctx.verify_mode = ssl.CERT_NONE
+ssl.HAS_SNI = False
+requests.packages.urllib3.disable_warnings()
 
 dfheader = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39",
+    "user-agent": "AppEngine-Google; (+http://code.google.com/appengine; appid: webetrex)",
     "sec-ch-ua": '''" Not A;Brand";v="99", "Chromium";v="101", "Microsoft Edge";v="101"''',
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-platform": "Windows",
@@ -31,7 +29,12 @@ def get_qs(qs, key):
 
 
 class Network():
-    dfheader = dfheader.copy()
+    PROXY_HEADER = {
+        "Px-IP": "1.1.1.1",
+        # "Px-Host": "",
+        "Px-Token": "mysecuretoken",
+    }
+    PROXY_DOMAIN = "no.deception.world"
 
     def __init__(self, hostTips: dict, log_path=".log", log_level=20, proxies={"http": None, "https": None}) -> None:
         '''
@@ -46,80 +49,71 @@ class Network():
         '''
 
         self.LOG = Log("Network", log_level=log_level, log_path=log_path)
-        # self.s.trust_env = False
+        self.s = requests.session()
+        self.s.trust_env = False
+        self.s.keep_alive = False
         self.table = hostTips
-        self.s = None
+        self.dfheader = Header.addheader(dfheader.copy(), self.PROXY_HEADER)
 
-    async def session(self):
-        if self.s is None:
-            connector = aiohttp.TCPConnector(ssl=ssl_ctx)
-            self.s = aiohttp.ClientSession(connector=connector)
-            self.s.keep_alive = False
-        return self.s
-
-    async def get(self, url, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
-        h = Header.headerchange(self, headers, noDefaultHeader, changeDefaultHeader)
-        s = await self.session()
+    def get(self, url, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
+        h = Header.headerchange(
+            self, headers, noDefaultHeader, changeDefaultHeader)
         domain = url.split("/")[2]
+        newurl = url.replace(domain, self.PROXY_DOMAIN)
+        h["Px-Host"] = domain
         conf = get_qs(self.table, domain)
         if conf != False:
             ip = get_qs(conf, "ip")
             if ip:
-                url = url.replace(domain, ip)
+                h["Px-Host"] = ip
                 h["host"] = domain
         try:
-            # async with s.get(url, headers=h, **kwargs) as r:
-            #     await r.text(errors="ignore")
-            r = await s.get(url, headers=h, **kwargs)
-            # r = await s.get(url, headers=h, **kwargs)
-            # await r.close()
+            r = self.s.get(newurl, headers=h, verify=False, **kwargs)
         except Exception as e:
-            self.LOG.error(f"[GET][ERROR]\t\t{url}\t{domain}\t{e.args}")
+            self.LOG.error(f"[ProxyGET][ERROR]\t\t{url}\t{domain}\t{e.args}")
             raise Exception(e.args)
-        self.LOG.info(f"[GET][INFO]\t\t{int(r.status)}\t{r.url}\t{domain}")
+        self.LOG.info(f"[ProxyGET][INFO]\t\t{r.status_code}\t{url}\t{domain}")
         try:
             self.LOG.debug(
-                f"[GET][DEBUG]\t\t{h}\n"+"\t"*11 + f"{r.headers}\n" + "\t"*11 + f"{await r.text()}")
+                f"[ProxyGET][DEBUG]\t\t{h}\n"+"\t"*11 + f"{r.headers}\n" + "\t"*11 + f"{r.text}")
         except Exception:
             pass
         return r
 
-    async def post(self, url, data=False, json={}, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
-        h = Header.headerchange(self, headers, noDefaultHeader, changeDefaultHeader)
-        s = await self.session()
+    def post(self, url, data=False, json={}, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
+        h = Header.headerchange(
+            self, headers, noDefaultHeader, changeDefaultHeader)
         domain = url.split("/")[2]
+        newurl = url.replace(domain, self.PROXY_DOMAIN)
+        h["Px-Host"] = domain
         conf = get_qs(self.table, domain)
         if conf != False:
             ip = get_qs(conf, "ip")
             if ip:
-                url = url.replace(domain, ip)
+                h["Px-Host"] = ip
                 h["host"] = domain
         try:
             if data == False:
-                # async with s.post(url, json=json, headers=h,
-                #                   **kwargs) as r:
-                #     await r.text(errors="ignore")
-                r = await s.post(url, json=json, headers=h, **kwargs)
+                r = self.s.post(newurl, json=json, headers=h,
+                                verify=False, **kwargs)
                 data = json
             else:
-                # async with s.post(url, data=data, headers=h,
-                #                   **kwargs) as r:
-                r = await s.post(url, data=data, headers=h, **kwargs)
-                # await r.text(errors="ignore")
+                r = self.s.post(newurl, data=data, headers=h,
+                                verify=False, **kwargs)
         except Exception as e:
-            self.LOG.error(
-                f"[POST][ERROR]\t\t{url}\t{domain}\t{data}\t{json}\t{e.args}\n{traceback.format_exc()}")
+            self.LOG.error(f"[ProxyPOST][ERROR]\t\t{url}\t{domain}\t{e.args}")
             raise Exception(e.args)
-        self.LOG.info(f"[POST][INFO]\t\t{int(r.status)}\t{r.url}\t{domain}")
+        self.LOG.info(f"[ProxyPOST][INFO]\t\t{r.status_code}\t{url}\t{domain}")
         try:
             self.LOG.debug(
-                f"[POST][DEBUG]\t\t{h}\n"+"\t"*11 + f"{r.headers}\n" + "\t"*11 + f"{data}\n" + "\t"*11 + f"{await r.text()}")
+                f"[ProxyPOST][DEBUG]\t\t{h}\n"+"\t"*11 + f"{r.headers}\n" + "\t"*11 + f"{data}\n" + "\t"*11 + f"{r.text}")
         except Exception:
             pass
         return r
 
     def put(self, url, data=False, json={}, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
-        h = Header.headerchange(self, headers, noDefaultHeader, changeDefaultHeader)
+        h = Header.headerchange(
+            self, headers, noDefaultHeader, changeDefaultHeader)
         domain = url.split("/")[2]
         conf = get_qs(self.table, domain)
         if conf != False:
@@ -136,9 +130,9 @@ class Network():
                 r = self.s.put(url, data=data, headers=h,
                                verify=False, **kwargs)
         except Exception as e:
-            self.LOG.error(f"[POST][ERROR]\t\t{url}\t{domain}\t{e.args}\n{traceback.format_exc()}")
+            self.LOG.error(f"[POST][ERROR]\t\t{url}\t{domain}\t{e.args}")
             raise Exception(e.args)
-        self.LOG.info(f"[POST][INFO]\t\t{r.status}\t{r.url}\t{domain}")
+        self.LOG.info(f"[POST][INFO]\t\t{r.status_code}\t{r.url}\t{domain}")
         try:
             self.LOG.debug(
                 f"[POST][DEBUG]\t\t{h}\n"+"\t"*11 + f"{r.headers}\n" + "\t"*11 + f"{data}\n" + "\t"*11 + f"{r.text}")

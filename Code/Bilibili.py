@@ -12,8 +12,17 @@ class Bilibili():
         self.s = s
         # self.s.changeHeader(self.header)
 
-    def get(self, url):
-        return self.s.get(url).json()
+    def get(self, url, tryMAX=1000):
+        def _get(tryID=0):
+            tmp = self.s.get(url).json()
+            if tryID >= tryMAX:
+                return tmp
+            if tmp["code"] != 0:
+                tryID += 1
+                return _get(tryID)
+            else:
+                return tmp
+        return _get()
 
     def videoshot(self, BV):
         "视频缩略图"
@@ -31,9 +40,7 @@ class Bilibili():
     def spaceInfo(self, UID):
         "个人空间信息"
         url = f"https://api.bilibili.com/x/space/acc/info?mid={UID}"
-        tmp = self.s.get(url).text.replace(
-            '''{"code":-509,"message":"请求过于频繁，请稍后再试","ttl":1}''', "")
-        return json.loads(tmp)
+        return self.get(url)
 
     def DynamicList(self, UID, offset=""):
         '动态列表\n\noffset由上一个获取的列表提供'
@@ -51,4 +58,6 @@ class Bilibili():
         try:
             return self.spaceInfo(UID)['data']['live_room']['liveStatus'] == 1
         except TypeError:
-            return False  # 账户不存在直播间
+            return None  # 账户不存在直播间
+        except KeyError:
+            return None

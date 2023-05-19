@@ -26,9 +26,8 @@ class BiliRss(Bilibili, RSS):
             TYPE = "Video"
         elif pub_action == "投稿了文章":
             TYPE = "Article"
-            logger.error(f"BiliRSS TYPE NOT FOUND:\n\t{str(single)}")
         else:
-
+            logger.error(f"BiliRSS TYPE NOT FOUND:\n\t{str(single)}")
             return False
         msg = MesssagePart.plain(
             single['modules']['module_author']['name'] + pub_action + "\n")
@@ -74,9 +73,13 @@ class BiliRss(Bilibili, RSS):
     async def fetch(self, UID):
         data = await self.DynamicList(UID)
         Did = ""
+        Live = False
         while Did == "":
             tmp = data['data']['items'].pop(0)
-            if "module_tag" in tmp['modules'].keys():
+            if tmp["type"] == "DYNAMIC_TYPE_LIVE_RCMD":
+                # 过滤直播动态,通过动态是否存在直播动态来判断直播,取代访问个人中心的方式(个人中心访问存在过多412和code-799)
+                Live = True
+            elif "module_tag" in tmp['modules'].keys():
                 if tmp['modules']['module_tag']['text'] != '置顶':
                     Did = tmp['id_str']
             else:
@@ -95,7 +98,8 @@ class BiliRss(Bilibili, RSS):
                 new["LS"] = True
             elif new["LS"] == False and old["LS"] == True:
                 new['LS'] = False
-                new['body'] = False  # 直播前后动态的最新DId会变动
+                new['body'] = False
+                # 直播前后动态的最新DId会变动(划掉),这次更新已经剔除了直播动态的Did,但是留着也不影响
             else:
                 new["LS"] = False
             if new["Did"] == old["Did"]:

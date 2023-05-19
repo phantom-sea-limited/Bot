@@ -8,13 +8,26 @@ class Bilibili():
         "referer": "https://www.bilibili.com/"
     }
 
-    def __init__(self, s=Network({})) -> None:
+    def __init__(self, s=Network({}, log_level=30)) -> None:
         self.s = s
         self.s.changeHeader(self.header)
 
-    async def get(self, url):
-        r = await self.s.get(url)
-        return await r.json(content_type="application/json")
+    # async def get(self, url):
+    #     r = await self.s.get(url)
+    #     return await r.json(content_type="application/json")
+
+    async def get(self, url, tryMAX=1000):
+        async def _get(tryID=0):
+            tmp = await self.s.get(url)
+            tmp = await tmp.json(content_type=None)
+            if tryID >= tryMAX:
+                return tmp
+            if tmp["code"] != 0:
+                tryID += 1
+                return await _get(tryID)
+            else:
+                return tmp
+        return await _get()
 
     async def videoshot(self, BV):
         "视频缩略图"
@@ -32,11 +45,7 @@ class Bilibili():
     async def spaceInfo(self, UID):
         "个人空间信息"
         url = f"https://api.bilibili.com/x/space/acc/info?mid={UID}"
-        tmp = await self.s.get(url)
-        tmp = await tmp.text()
-        tmp = tmp.replace(
-            '''{"code":-509,"message":"请求过于频繁，请稍后再试","ttl":1}''', "")
-        return json.loads(tmp)
+        return await self.get(url)
 
     async def DynamicList(self, UID, offset=""):
         '动态列表\n\noffset由上一个获取的列表提供'
@@ -55,6 +64,6 @@ class Bilibili():
         try:
             return tmp['data']['live_room']['liveStatus'] == 1
         except TypeError:
-            return False  # 账户不存在直播间
+            return None  # 账户不存在直播间
         except KeyError:
-            return False
+            return None
