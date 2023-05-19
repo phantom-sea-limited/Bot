@@ -84,7 +84,7 @@ class BiliRss(Bilibili, RSS):
                     Did = tmp['id_str']
             else:
                 Did = tmp['id_str']
-        return {"UID": UID, "Did": Did, "LS": await self.IsLiveNow(UID), "body": tmp}
+        return {"UID": UID, "Did": Did, "LS": Live, "body": tmp}
 
     async def analysis(self, UID):
         old = self.cache(UID)
