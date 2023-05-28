@@ -8,6 +8,7 @@ from nonebot.adapters.mirai2.message import MessageChain
 from nonebot_plugin_apscheduler import scheduler
 from Instance import BOTInstanceInstance as BOT
 from Instance import NetworkInstance
+from Instance import ProxyNetworkInstance
 from Lib.Message import Message
 from Lib.ini import CONF
 from .AsyncRss import *
@@ -33,7 +34,7 @@ SUB = (
     Rss("热辣漫画", RelaComic(NetworkInstance, c=c)),
     Rss("pixiv", PixivRSS(c=c)),
     Rss("起点", Qidian(NetworkInstance, c=c)),
-    Rss("b站", BiliRss(c=c))
+    Rss("b站", BiliRss(ProxyNetworkInstance, c=c))
 )
 
 

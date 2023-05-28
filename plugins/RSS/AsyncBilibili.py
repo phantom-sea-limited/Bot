@@ -2,7 +2,7 @@ import json
 from nonebot.log import logger
 from Code.AsyncBilibili import Bilibili
 from Lib.Message import MesssagePart
-from Lib.AsyncNetwork import Network
+from Lib.AsyncProxyNetwork import Network
 from .AsyncRss import RSS
 
 

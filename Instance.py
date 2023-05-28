@@ -1,10 +1,11 @@
 from nonebot import get_driver
 from Lib.AsyncBot import BOT
 from Lib.AsyncNetwork import Network
+from Lib.AsyncProxyNetwork import Network as ProxyNetwork
 from Code.AsyncPixiv import Pixiv
 
 driver = get_driver()
-#Audio
+# Audio
 FFMPEG = getattr(driver.config, "ffmpeg", False)
 # PIXIV
 PHPSESSID = getattr(driver.config, "pixiv_phpsessid", "")
@@ -29,4 +30,5 @@ class BOTInstance(BOT):
 
 
 NetworkInstance = Network({})
+ProxyNetworkInstance = ProxyNetwork({})
 BOTInstanceInstance = BOTInstance(NetworkInstance)
