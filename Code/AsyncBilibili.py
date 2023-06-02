@@ -31,6 +31,16 @@ class Bilibili():
                 return tmp
         return await _get()
 
+    async def csrfToken(self):
+        r = await self.s.get("https://www.bilibili.com/")
+        cookies = ""
+        for i in r.headers.get("set-cookie").split(", "):
+            j = i.split("; ")[0]
+            if "=" in j:
+                cookies += j + "; "
+        # logger.info(f"BiliCookie获取成功:{cookies}")
+        self.s.changeHeader({"cookie": cookies})
+
     async def videoshot(self, BV):
         "视频缩略图"
         url = f"https://api.bilibili.com/x/player/videoshot?bvid={BV}&index=1"
