@@ -1,5 +1,5 @@
 import json
-from Instance import BiliInstance as Bilibili
+from Code.Bilibili import Bilibili
 from Lib.Message import MesssagePart
 from .Rss import RSS
 
