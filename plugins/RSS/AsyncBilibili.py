@@ -1,4 +1,5 @@
 import json
+import time
 from nonebot.log import logger
 from Instance import BiliInstance as Bilibili
 from Lib.Message import MesssagePart
@@ -108,7 +109,11 @@ class BiliRss(Bilibili, RSS):
 
     async def transform(self, data, msg=""):
         if data["body"] != False:
-            return self.getDynamicInfo(data["body"])
+            if time.time()-data["body"]["modules"]["module_author"]["pub_ts"] >= 3600:
+                # 检查动态时间距今是否超过1小时，超过忽略
+                return False
+            else:
+                return self.getDynamicInfo(data["body"])
         if data["LS"] == True:
             info = await self.spaceInfo(data["UID"])
             return MesssagePart.plain(

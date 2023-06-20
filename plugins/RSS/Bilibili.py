@@ -1,4 +1,5 @@
 import json
+import time
 from Code.Bilibili import Bilibili
 from Lib.Message import MesssagePart
 from .Rss import RSS
@@ -74,7 +75,7 @@ class BiliRss(Bilibili, RSS):
         Live = False
         while Did == "":
             tmp = data['data']['items'].pop(0)
-            if tmp["type"] == "DYNAMIC_TYPE_LIVE_RCMD":  
+            if tmp["type"] == "DYNAMIC_TYPE_LIVE_RCMD":
                 # 过滤直播动态,通过动态是否存在直播动态来判断直播，取代访问个人中心的方式(个人中心访问存在过多412和code-799)
                 Live = True
             elif "module_tag" in tmp['modules'].keys():
@@ -96,7 +97,7 @@ class BiliRss(Bilibili, RSS):
                 new["LS"] = True
             elif new["LS"] == False and old["LS"] == True:
                 new['LS'] = False
-                new['body'] = False  
+                new['body'] = False
                 # 直播前后动态的最新DId会变动(划掉),这次更新已经剔除了直播动态的Did,但是留着也不影响
             if new["Did"] == old["Did"]:
                 new["body"] = False
@@ -104,7 +105,11 @@ class BiliRss(Bilibili, RSS):
 
     def transform(self, data, msg=""):
         if data["body"] != False:
-            return self.getDynamicInfo(data["body"])
+            if time.time()-data["body"]["modules"]["module_author"]["pub_ts"] >= 3600:
+                # 检查动态时间距今是否超过1小时，超过忽略
+                return False
+            else:
+                return self.getDynamicInfo(data["body"])
         if data["LS"] == True:
             info = self.spaceInfo(data["UID"])
             return MesssagePart.plain(
