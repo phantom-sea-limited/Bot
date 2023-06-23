@@ -16,7 +16,7 @@ class RSS():
         self.c = c
 
     async def rss(self, url):
-        return await self.s.get(f"https://api.rss2json.com/v1/api.json?rss_url={quote(url)}")
+        return await self.s.get(f"https://api.rss2json.com/v1/api.json?rss_url={quote(url,'')}")
 
     def cache(self, url, data: str = ""):
         if data == "":
@@ -102,7 +102,7 @@ class Acgnx(RSS):
         super().__init__(n, c)
 
     async def rss(self, word):
-        url = f"https://share.acgnx.net/rss.xml?keyword={word}"
+        url = f"https://share.acgnx.net/rss.xml?keyword={word.replace(' ','+')}"
         return await super().rss(url)
 
     def cache(self, word, data: json = {"items": [{"title": ""}]}):

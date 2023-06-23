@@ -3,7 +3,7 @@ import time
 from nonebot.log import logger
 from Instance import BiliInstance as Bilibili
 from Lib.Message import MesssagePart
-from Lib.AsyncProxyNetwork import Network
+from Lib.AsyncNetwork import Network
 from .AsyncRss import RSS
 
 
