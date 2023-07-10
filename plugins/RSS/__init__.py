@@ -30,7 +30,7 @@ c = CONF("rss")
 
 SUB = (
     Rss("acgnx", Acgnx(NetworkInstance, c=c)),
-    Rss("热辣漫画", RelaComic(NetworkInstance, c=c)),
+    Rss("热辣漫画", RelaComic(c=c)),
     Rss("pixiv", PixivRSS(c=c)),
     Rss("起点", Qidian(NetworkInstance, c=c)),
     Rss("b站", BiliRss(c=c))

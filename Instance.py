@@ -1,4 +1,5 @@
 from nonebot import get_driver
+from nonebot.log import logger
 from Lib.AsyncBot import BOT
 from Lib.AsyncNetwork import Network
 from Lib.AsyncProxyNetwork import Network as ProxyNetwork
@@ -41,6 +42,11 @@ class BOTInstance(BOT):
     QQ = qq
 
 
-NetworkInstance = Network({})
+class _N(Network):
+    def changeHeader(self, header, noDefaultHeader=False):
+        logger.warning("!!!\t禁止对默认请求系统进行请求头修改\t!!!")
+
+
+NetworkInstance = _N({})
 ProxyNetworkInstance = ProxyNetwork({})
 BOTInstanceInstance = BOTInstance(NetworkInstance)
