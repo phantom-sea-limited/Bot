@@ -10,6 +10,8 @@ class RSS():
     minute = "30"
     wait = 5
     "订阅更新间隔"
+    MAP = None
+    "订阅ID和NAME的翻译集"
 
     def __init__(self, n=Network({}), c=CONF("rss")) -> None:
         self.s = n
@@ -44,6 +46,7 @@ class RSS():
     def unsubscribe(self, data):
         all = self.c.load(self.sec, "subscribe")[0]
         all = json.loads(all)
+        data["word"] = self.DataMap(NAME=data["word"])
         try:
             all.remove(data)
         except Exception:
@@ -53,13 +56,23 @@ class RSS():
         self.c.save()
         return True
 
-    def showsubscribe(self):
+    def showrawsubscribe(self):
+        "原始订阅数据"
         all = self.c.load(self.sec, "subscribe")[0]
         if all == False:
             all = []
         else:
             all = json.loads(all)
         return all
+
+    def showsubscribe(self):
+        "使用翻译集翻译后的订阅数据"
+        all = self.showrawsubscribe()
+        n = []
+        for i in all:
+            i["word"] = self.DataMap(ID=i["word"])
+            n.append(i)
+        return n
 
     async def analysis(self, url):
         "重点重构对象,提取缓存与实时RSS订阅的内容区别,即更新的内容"
@@ -87,6 +100,50 @@ class RSS():
 
     async def search(self, word):
         "实现搜索功能,正常应该返回MessageChain或其可兼容值"
+
+    def DataMap(self, ID=False, NAME=False):
+        "订阅ID和订阅内容名称的翻译集"
+        if self.MAP == None:
+            tmp = self.c.load(self.sec, "Data")[0]
+            if tmp:
+                self.MAP = json.loads(tmp)
+            else:
+                self.MAP = {"ID": {}, "NAME": {}}
+                self.c.add(self.sec, "Data", json.dumps(self.MAP))
+        if NAME and ID:
+            self.MAP["ID"][ID] = NAME
+            self.MAP["NAME"][NAME] = ID
+            self.c.add(self.sec, "Data", json.dumps(self.MAP))
+        elif NAME:
+            try:
+                return self.MAP["NAME"][NAME]
+            except:
+                return NAME
+        elif ID:
+            try:
+                return self.MAP["ID"][ID]
+            except:
+                return ID
+
+    async def TranslateID(self, ID):
+        "翻译ID,返回False阻止翻译"
+        return False
+
+    async def InitMAP(self):
+        "翻译集初始化"
+        tmp = self.c.load(self.sec, "Data")[0]
+        if tmp:
+            self.MAP = json.loads(tmp)
+        else:
+            self.MAP = {"ID": {}, "NAME": {}}
+            self.c.add(self.sec, "Data", json.dumps(self.MAP))
+
+        t = self.showrawsubscribe()
+        for i in t:
+            if i["word"] not in self.MAP["ID"]:
+                new = await self.TranslateID(i['word'])
+                if new:
+                    self.DataMap(i["word"], new)
 
 
 class RSSException(Exception):

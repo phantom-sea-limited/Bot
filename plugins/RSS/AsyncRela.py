@@ -12,7 +12,7 @@ class RelaComic(RSS):
     API = "https://api.relamanhua.com/api/v3/"
     sec = "RelaComic"
 
-    def __init__(self, n=Network({}), c=CONF("rss")) -> None:
+    def __init__(self, n=Network({"api.relamanhua.com": {"ip": "3.113.74.133"}}), c=CONF("rss")) -> None:
         "热辣漫画订阅"
         super().__init__(n, c)
         self.s.changeHeader(self.header)
@@ -31,6 +31,7 @@ class RelaComic(RSS):
         url = f"comic2/{word}?platform=1"
         new = await self.rss(url)
         uuid = new["results"]["comic"]["last_chapter"]["uuid"]
+        self.DataMap(word, new["results"]["comic"]["name"])
         if new["code"] != 200:
             raise RSSException(new["message"])
         old = self.cache(word)
@@ -61,3 +62,10 @@ class RelaComic(RSS):
             for i in r["results"]["list"]:
                 msg += f'{i["name"]}\t作者 {i["author"][0]["name"]}\n订阅关键词\t{i["path_word"]}\n\n'
             return msg[:-2]
+
+    async def TranslateID(self, ID):
+        r = await self.rss(f"comic2/{ID}?platform=1")
+        return r["results"]["comic"]["name"]
+
+    def start(self):
+        return [self.InitMAP]

@@ -90,6 +90,7 @@ class BiliRss(Bilibili, RSS):
     async def analysis(self, UID):
         old = self.cache(UID)
         new = await self.fetch(UID)
+        self.DataMap(UID, new["body"]['modules']['module_author']['name'])
         if old == False:  # 初始化订阅
             self.cache(UID, new)
             return False
@@ -122,3 +123,10 @@ class BiliRss(Bilibili, RSS):
             ) + \
                 MesssagePart.image(info['data']['live_room']['cover'])
         return False
+
+    async def TranslateID(self, ID):
+        new = await self.fetch(ID)
+        return new["body"]['modules']['module_author']['name']
+
+    def start(self):
+        return [self.InitMAP]
