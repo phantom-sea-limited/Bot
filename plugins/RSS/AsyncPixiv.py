@@ -17,13 +17,6 @@ class PixivRSS(RSS, Pixiv):
         RSS.__init__(self, n, c)
         Pixiv.__init__(self, n)
 
-    async def none(self, **kwargs):
-        "垃圾桶函数"
-        if self.err == False:
-            self.err = True
-            raise RSSException("警告！pixiv登录状态失效，订阅系统已自动暂停，请修复后重启")
-        return {'illusts': [], 'manga': [], 'novels': []}
-
     @staticmethod
     def top(data):
         fin = {
@@ -54,12 +47,14 @@ class PixivRSS(RSS, Pixiv):
 
     async def check_logined_state(self) -> bool:
         if await super().check_logined_state() != True:
-            self.analysis = self.none
+            self.err = True
             logger.error("Pixiv登录状态异常")
         else:
             logger.info("Pixiv登录状态正常")
 
     async def analysis(self, uid):
+        if self.err:
+            raise RSSException("警告！pixiv登录状态失效，订阅系统已自动暂停，请修复后重启")
         new = await self.get_by_uid(uid)
         old = self.cache(uid)
         if old == False:  # 初始化订阅

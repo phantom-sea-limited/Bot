@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 from dataclasses import dataclass
 from nonebot import on_startswith, get_driver
 from nonebot.matcher import Matcher
@@ -24,6 +25,7 @@ class Rss:
     keyword: str
     handle: RSS
     updating: bool = False
+    error: bool = False
 
 
 c = CONF("rss")
@@ -98,10 +100,8 @@ def handles():
             await matcher.finish(msg[:-1])
 
         async def _fetchsubscribe():
-            r = a.handle.showsubscribe()
-            if r == []:
-                pass
-            else:
+            if a.error != True:
+                r = a.handle.showsubscribe()
                 for i in r:
                     await asyncio.sleep(a.handle.wait)
                     try:
@@ -113,6 +113,11 @@ def handles():
                     except RSSException as e:
                         a.updating = False
                         msg = e.args[0]
+                        a.error = True
+                    except Exception as e:
+                        a.updating = False
+                        a.error = True
+                        msg = f"{a.keyword}订阅出现异常:\n{traceback.format_exc()}"
                     logger.info(i["word"] + "\t" + str(msg))
                     if msg != False:
                         m = Message(i["target"])

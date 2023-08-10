@@ -18,12 +18,12 @@ class Bilibili():
     #     r = await self.s.get(url)
     #     return await r.json(content_type="application/json")
 
-    async def get(self, url, tryMAX=999):
+    async def get(self, url, tryMAX=10):
         async def _get(tryID=0):
             tmp = await self.s.get(url)
             tmp = await tmp.json(content_type=None)
             if tryID >= tryMAX:
-                return tmp
+                raise Exception("Fetch Bilibili API Failed")
             if tmp["code"] != 0:
                 tryID += 1
                 return await _get(tryID)
