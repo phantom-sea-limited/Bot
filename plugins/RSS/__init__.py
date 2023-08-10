@@ -100,9 +100,9 @@ def handles():
             await matcher.finish(msg[:-1])
 
         async def _fetchsubscribe():
-            if a.error != True:
-                r = a.handle.showsubscribe()
-                for i in r:
+            r = a.handle.showsubscribe()
+            for i in r:
+                if a.error != True:
                     await asyncio.sleep(a.handle.wait)
                     try:
                         a.updating = True
