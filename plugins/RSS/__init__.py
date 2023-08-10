@@ -100,7 +100,7 @@ def handles():
             await matcher.finish(msg[:-1])
 
         async def _fetchsubscribe():
-            r = a.handle.showsubscribe()
+            r = a.handle.showrawsubscribe()
             for i in r:
                 if a.error != True:
                     await asyncio.sleep(a.handle.wait)
