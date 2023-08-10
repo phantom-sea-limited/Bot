@@ -24,11 +24,11 @@ class RelaComic(RSS):
     get = rss
 
     async def conf(self):
-        url = "system/network2?platform=1"
+        url = "system/network2?format=json&platform=1"
         return await self.get(url)
 
     async def analysis(self, word):
-        url = f"comic2/{word}?platform=1"
+        url = f"comic2/{word}?format=json&platform=1"
         new = await self.rss(url)
         uuid = new["results"]["comic"]["last_chapter"]["uuid"]
         self.DataMap(word, new["results"]["comic"]["name"])
@@ -53,7 +53,7 @@ class RelaComic(RSS):
         return msg
 
     async def search(self, word):
-        url = f"search/comic?platform=1&q={word}&limit=20&offset=0&_update=true"
+        url = f"search/comic?format=json&platform=1&q={word}&limit=20&offset=0&_update=true"
         r = await self.get(url)
         if r["results"]["list"] == []:
             return "什么都没搜到"
@@ -64,7 +64,7 @@ class RelaComic(RSS):
             return msg[:-2]
 
     async def TranslateID(self, ID):
-        r = await self.rss(f"comic2/{ID}?platform=1")
+        r = await self.rss(f"comic2/{ID}?format=json&platform=1")
         return r["results"]["comic"]["name"]
 
     def start(self):
