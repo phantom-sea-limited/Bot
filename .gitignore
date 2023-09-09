@@ -147,3 +147,4 @@ venv.7z
 poetry.lock
 test
 test*
+.vscode/settings.json

@@ -117,7 +117,9 @@ def handles():
                     except Exception as e:
                         a.updating = False
                         a.error = True
-                        msg = f"{a.keyword}订阅出现异常:\n{traceback.format_exc()}"
+                        msg = f"{a.keyword}订阅出现异常,已自动终止"
+                        logger.error(
+                            f"{a.keyword}订阅出现异常:\n{e.args}\n{traceback.format_exc()}")
                     logger.info(i["word"] + "\t" + str(msg))
                     if msg != False:
                         m = Message(i["target"])
@@ -170,6 +172,20 @@ def handles():
         else:
             for j in start:
                 Driver.on_bot_connect(j)
+
+    async def Status(matcher: Matcher, event: MessageEvent):
+        msg = "订阅状态\n"
+        for i in SUB:
+            msg += i.keyword
+            if i.error:
+                msg += "\t异常\n"
+            else:
+                msg += "\t正常\n"
+        await matcher.finish(msg)
+
+    on_startswith(
+        "订阅状态", priority=1, block=True
+    ).append_handler(Status)
 
 
 handles()

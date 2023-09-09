@@ -4,6 +4,8 @@ pip install nonebot
 pip install nonebot_adapter_mirai2
 pip install requests
 pip install nonebot_plugin_apscheduler
+pip install aiohttp
+pip install nonebot2[fastapi]
 # pip install cn2an
 # pip install aiohttp
 # pip install cachetools
