@@ -4,22 +4,22 @@ from .AsyncRss import RSS, RSSException
 
 
 class RelaComic(RSS):
-    header = {
-        "referer": "https://m.relamanhua.com/",
-        "origin": "https://m.relamanhua.com",
-        "accept": "application/json"
-    }
-    API = "https://api.relamanhua.com/api/v3/"
+    # header = {
+    #     "referer": "https://m.relamanhua.com/",
+    #     "origin": "https://m.relamanhua.com",
+    #     "accept": "application/json"
+    # }
+    API = "https://static.deception.world/https://api.relamanhua.com/api/v3/"
     sec = "RelaComic"
 
-    def __init__(self, n=Network({"api.relamanhua.com": {"ip": "3.113.74.133"}}), c=CONF("rss")) -> None:
+    def __init__(self, n=Network({}), c=CONF("rss")) -> None:
         "热辣漫画订阅"
         super().__init__(n, c)
-        self.s.changeHeader(self.header)
+        # self.s.changeHeader(self.header)
 
     async def rss(self, url):
         r = await self.s.get(self.API + url)
-        return await r.json()
+        return await r.json(content_type="")
 
     get = rss
 

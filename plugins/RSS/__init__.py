@@ -19,20 +19,22 @@ from .AsyncBilibili import BiliRss
 
 Driver = get_driver()
 
+MAXError = 5
+
 
 @dataclass
 class Rss:
     keyword: str
     handle: RSS
     updating: bool = False
-    error: bool = False
+    error: int = 0
 
 
 c = CONF("rss")
 
 SUB = (
     Rss("acgnx", Acgnx(NetworkInstance, c=c)),
-    Rss("热辣漫画", RelaComic(c=c)),
+    Rss("热辣漫画", RelaComic(NetworkInstance, c=c)),
     Rss("pixiv", PixivRSS(c=c)),
     Rss("起点", Qidian(NetworkInstance, c=c)),
     Rss("b站", BiliRss(c=c))
@@ -102,7 +104,7 @@ def handles():
         async def _fetchsubscribe():
             r = a.handle.showrawsubscribe()
             for i in r:
-                if a.error != True:
+                if a.error <= MAXError:
                     await asyncio.sleep(a.handle.wait)
                     try:
                         a.updating = True
@@ -113,11 +115,11 @@ def handles():
                     except RSSException as e:
                         a.updating = False
                         msg = e.args[0]
-                        a.error = True
+                        ++a.error
                     except Exception as e:
                         a.updating = False
-                        a.error = True
-                        msg = f"{a.keyword}订阅出现异常,已自动终止"
+                        ++a.error
+                        msg = f"{a.keyword}订阅出现异常,异常计数{a.error}"
                         logger.error(
                             f"{a.keyword}订阅出现异常:\n{e.args}\n{traceback.format_exc()}")
                     logger.info(i["word"] + "\t" + str(msg))
@@ -178,10 +180,10 @@ def handles():
         for i in SUB:
             msg += i.keyword
             if i.error:
-                msg += "\t异常\n"
+                msg += f"\t异常次数{i.error}\n"
             else:
                 msg += "\t正常\n"
-        await matcher.finish(msg)
+        await matcher.finish(msg[:-1])
 
     on_startswith(
         "订阅状态", priority=1, block=True

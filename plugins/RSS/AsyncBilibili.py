@@ -55,8 +55,8 @@ class BiliRss(Bilibili, RSS):
                     MesssagePart.plain(
                         "https:" + single['modules']['module_dynamic']['major']['opus']['jump_url'])
             else:
-                for i in single['modules']['module_dynamic']['major']['draw']['items']:
-                    msg += MesssagePart.image(i['src'])
+                for i in single['modules']['module_dynamic']['major']['opus']['pics']:
+                    msg += MesssagePart.image(i['url'])
         if TYPE == None:
             msg += MesssagePart.plain(
                 "https://t.bilibili.com/" + single['id_str'])
