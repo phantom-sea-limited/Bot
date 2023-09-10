@@ -115,10 +115,10 @@ def handles():
                     except RSSException as e:
                         a.updating = False
                         msg = e.args[0]
-                        ++a.error
+                        a.error += 1
                     except Exception as e:
                         a.updating = False
-                        ++a.error
+                        a.error += 1
                         msg = f"{a.keyword}订阅出现异常,异常计数{a.error}"
                         logger.error(
                             f"{a.keyword}订阅出现异常:\n{e.args}\n{traceback.format_exc()}")
@@ -180,7 +180,7 @@ def handles():
         for i in SUB:
             msg += i.keyword
             if i.error:
-                msg += f"\t异常次数{i.error}\n"
+                msg += f"\t异常计数{i.error}\n"
             else:
                 msg += "\t正常\n"
         await matcher.finish(msg[:-1])
