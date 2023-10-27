@@ -5,15 +5,19 @@ from Lib.AsyncNetwork import Network
 from Lib.AsyncProxyNetwork import Network as ProxyNetwork
 from Code.AsyncPixiv import Pixiv
 from Code.AsyncBilibili import Bilibili
+from Code.BiliCookie import BiliCookie
+
 
 driver = get_driver()
 # Audio
 FFMPEG = getattr(driver.config, "ffmpeg", False)
 # PIXIV
 PHPSESSID = getattr(driver.config, "pixiv_phpsessid", "")
-MIRROR = getattr(driver.config, "mirror", "piv.deception.world")
+MIRROR = getattr(driver.config, "mirror", "piv.sirin.top")
 # BILIBILI
 BILICOOKIE = getattr(driver.config, "bilicookie", "")
+BILITOKEN = getattr(driver.config, "bilitoken", "")
+
 # BOT-HTTP-API
 BotUrl = getattr(driver.config, "http_url", "http://127.0.0.1:20000/")
 Master = getattr(driver.config, "http_master", "")
@@ -53,3 +57,6 @@ class _N(Network):
 NetworkInstance = _N({})
 ProxyNetworkInstance = ProxyNetwork({})
 BOTInstanceInstance = BOTInstance(NetworkInstance)
+
+BiliCookieInstance = BiliCookie()
+BiliCookieInstance.Init(BILICOOKIE, BILITOKEN)

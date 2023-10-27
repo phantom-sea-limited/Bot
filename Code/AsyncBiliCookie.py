@@ -53,7 +53,7 @@ class BiliCookie():
 
     async def CorrespondPath(self, t=int(time.time()*1000)):
         r = await self.n.get(
-            f"https://static.deception.world/https://wasm-rsa.vercel.app/api/rsa?t={t}")
+            f"https://static.sirin.top/https://wasm-rsa.vercel.app/api/rsa?t={t}")
         r = await r.json(content_type=None)
         r = r["hash"]
         return r

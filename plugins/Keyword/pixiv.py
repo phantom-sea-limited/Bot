@@ -8,4 +8,4 @@ class Pixiv():
         r = await n.get(f"https://api.sirin.top/release/PIXIV/random")
         r = await r.json(content_type=None)
         return MessageSegment.plain(f'''PID {r["body"]["id"]}\n''') + MessageSegment.image(url=r["body"]["urls"]["original"].replace(
-            "i.pixiv.re", "piv.deception.world"))
+            "i.pixiv.re", "piv.sirin.top"))

@@ -9,7 +9,7 @@ class Pixiv():
         "referer": "https://www.pixiv.net/",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36 Edg/96.0.1054.53",
     }
-    Mirror = "piv.deception.world"
+    Mirror = "piv.sirin.top"
     Logined = False
     "登录设置"
 

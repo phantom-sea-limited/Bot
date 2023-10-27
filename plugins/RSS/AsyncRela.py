@@ -9,7 +9,7 @@ class RelaComic(RSS):
     #     "origin": "https://m.relamanhua.com",
     #     "accept": "application/json"
     # }
-    API = "https://static.deception.world/https://api.relamanhua.com/api/v3/"
+    API = "https://static.sirin.top/https://api.relamanhua.com/api/v3/"
     sec = "RelaComic"
 
     def __init__(self, n=Network({}), c=CONF("rss")) -> None:
