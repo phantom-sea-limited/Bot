@@ -198,7 +198,7 @@ class Acgnx(RSS):
             return False
         msg = f"{msg}{new['feed']['title']}\n\n"
         for i in new["items"]:
-            msg += f"{i['categories'][0]} {i['title']}\n{i['link'].replace('https://share.acgnx.se','https://share.acgnx.net')}\n\n"
+            msg += f"{i['categories'][0]} {i['title']}\n{i['link']}\n\n"
         return msg[:-2]
 
     async def search(self, word):
