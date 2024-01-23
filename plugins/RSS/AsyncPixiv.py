@@ -97,6 +97,13 @@ class PixivRSS(RSS, Pixiv):
                 f'\n\n更多更新请查看https://www.pixiv.net/users/{r["body"]["userId"]}')
         if data["manga"] != []:
             i = data["manga"][0]
+            r = await self.get_by_pid(i)
+            msg += MesssagePart.plain(
+                f'PID {i}\n{r["body"]["illustTitle"]}')
+            msg += MesssagePart.image(r["body"]["urls"]
+                                      ["original"].replace("i.pximg.net", self.Mirror))
+            msg += MesssagePart.plain(
+                f'\n\n更多更新请查看https://www.pixiv.net/users/{r["body"]["userId"]}')
             msg += MesssagePart.plain(f"但是更新的是漫画，这部分功能尚未完成，漫画ID为{i}")
         if data["novels"] != []:
             i = data["novels"][0]
