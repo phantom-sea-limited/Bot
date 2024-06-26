@@ -76,7 +76,7 @@ class RSS():
 
     async def analysis(self, url):
         "重点重构对象,提取缓存与实时RSS订阅的内容区别,即更新的内容"
-        return await self.rss(url).json()
+        return (await self.rss(url)).json()
 
     async def transform(self, data, msg=""):
         "重点重构对象,将更新的条目整合成一条消息,返回MesssagePart或其可兼容值"

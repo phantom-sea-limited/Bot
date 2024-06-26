@@ -62,7 +62,7 @@ def handles():
             word = event.get_plaintext().replace(a.keyword + "订阅", "")
             id, type = get_id(event)
             if word == "":
-                matcher.finish("虚空订阅?")
+                await matcher.finish("虚空订阅?")
             try:
                 await a.handle.analysis(word)
             except RSSException as e:
